@@ -127,7 +127,7 @@ public class SecurityController {
                         jwtClaimsSet
                 );
         String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-        return Map.of("accessToken", jwt);
+        return Map.of("accessToken", jwt, "role", scope);
 
 
     }
@@ -177,6 +177,12 @@ public class SecurityController {
                         roles.add(modRole);
 
                         break;
+                    case "coach":
+                        Role coachRole = roleRepository.findByName(ERole.coach)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(coachRole);
+
+                        break;
                     case "dancer":
                         Role dancerRole = roleRepository.findByName(ERole.dancer)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -187,12 +193,6 @@ public class SecurityController {
                         Role schoolRole = roleRepository.findByName(ERole.school)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(schoolRole);
-
-                        break;
-                    case "coach":
-                        Role coachRole = roleRepository.findByName(ERole.coach)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(coachRole);
 
                         break;
                     default:

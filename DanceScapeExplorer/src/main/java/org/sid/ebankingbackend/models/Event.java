@@ -1,4 +1,4 @@
-package org.sid.ebankingbackend.entities;
+package org.sid.ebankingbackend.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,30 +8,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Training {
+public class Event {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String trainingName;
+    private Date eventDate;
 
-    private String description;
+    private String eventName;
 
-    private Instant start;
+    private String eventDescription;
 
-    private Instant end;
-
-    private String color = "#007bff";
-
-    private Long capacity;
-
-    private String danceHallName;
-
-    private String coachName;
+    private String eventAddress;
 }

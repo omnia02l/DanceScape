@@ -27,7 +27,5 @@ import java.util.Set;
         @OneToMany(cascade = CascadeType.ALL)
         private Set<Dancestyle> dancestyles ;
 
-        @OneToMany(cascade = CascadeType.ALL, mappedBy="dancecategory")
-        private Set<Training> Trainings;
 
 }

@@ -1,46 +1,31 @@
 package org.sid.ebankingbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.sid.ebankingbackend.models.User;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
-
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Table( name = "Comment")
-public class Comment implements Serializable {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idcmt")
-    private Long idcmt;
-    private String descriptionCmt;
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime CommentDateTime;
-    private boolean likeCmt;
+    private Long id;
+
+    private String text;
+
+    private String userName;
+
+    private Date creationDate = new Date(System.currentTimeMillis());
 
     @ManyToOne
-    private User user;
-
-    @ManyToOne
+    @JoinColumn(name = "post_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Post post;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<Interaction> interaction;
-
 }
-

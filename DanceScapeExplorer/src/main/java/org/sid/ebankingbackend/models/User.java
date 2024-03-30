@@ -59,8 +59,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
-    private List<Comment> comments;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
@@ -79,20 +77,9 @@ public class User {
     private Set<Claim> Claims;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    @JsonIgnore
-    private Set<Training> Trainings;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    @JsonIgnore
-    private Set<Booking> Bookings;
-
     @OneToOne
     @JsonIgnore
     private Agreement agreement;
-    @JsonIgnore
-    @OneToMany(cascade= CascadeType.ALL, mappedBy = "user")
-    List<Interaction> interactions;
 
     public User(String username, String firstName, String lastName, String phoneNumber, String email, String password) {
         this.username = username;
@@ -101,5 +88,9 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.password = password;
+    }
+
+    public String getUserRole(){
+        return this.getRoles().stream().toList().get(0).getName().toString();
     }
 }

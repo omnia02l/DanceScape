@@ -10,8 +10,6 @@ public interface AccountService {
 
     List<User> listAccounts();
 
-
-
     User getPrincipal(String userName);
 
     String editProfile(String userName, EditProfileRequest editProfileRequest);

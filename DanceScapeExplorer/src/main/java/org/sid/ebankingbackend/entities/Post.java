@@ -1,43 +1,35 @@
 package org.sid.ebankingbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.io.Serializable;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-//@Table( name = "Post")
-public class Post implements Serializable {
+@Data @AllArgsConstructor @NoArgsConstructor
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idPost")
-    private Long idPost;
-    private String titlePost;
-    private String descriptionPost;
-    @Temporal(TemporalType.DATE)
-    private Date pubdate;
-    private String imagePost;
-    private boolean isliked;
+    private Long id;
 
-    @OneToMany(mappedBy = "post")
-    private Set<Comment> comments;
+    private String title;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="post")
-    private Set<Interaction> Interactions;
+    private String description;
 
+    private Instant creationDate = Instant.now();
 
+    private String userName;
 
+    private Long likes=0L;
+
+    private Long dislikes=0L;
+
+    @OneToMany(mappedBy = "post" , cascade = CascadeType.REMOVE)
+    private List<Comment> comments=new ArrayList<>();
 }

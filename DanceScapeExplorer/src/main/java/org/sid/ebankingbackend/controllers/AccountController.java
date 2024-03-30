@@ -22,7 +22,6 @@ public class AccountController {
     }
 
 
-
     @GetMapping("/profile")
     private UserDTO getPrincipal(Principal principal){
         return new UserDTO(this.accountService.getPrincipal(principal.getName()));
