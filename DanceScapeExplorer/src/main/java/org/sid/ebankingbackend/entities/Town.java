@@ -1,6 +1,8 @@
 package org.sid.ebankingbackend.entities;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -10,6 +12,8 @@ import java.util.Set;
 //@Table(name = "Town")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Town implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
