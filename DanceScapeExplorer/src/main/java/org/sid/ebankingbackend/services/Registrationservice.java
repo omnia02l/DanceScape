@@ -4,13 +4,13 @@ package org.sid.ebankingbackend.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.sid.ebankingbackend.entities.*;
-import org.sid.ebankingbackend.repository.CompetitionRepository;
-import org.sid.ebankingbackend.repository.DancerRepository;
-import org.sid.ebankingbackend.repository.RegistrationRepository;
-import org.sid.ebankingbackend.repository.TeamRepository;
+import org.sid.ebankingbackend.models.User;
+import org.sid.ebankingbackend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import java.security.Principal;
+
 
 import java.util.*;
 
@@ -26,6 +26,8 @@ public class Registrationservice implements IRegistrationservice {
     DancerRepository dancerepo;
     @Autowired
     CompetitionRepository comprepo;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Override
@@ -111,13 +113,20 @@ public class Registrationservice implements IRegistrationservice {
 
     @Override
     @Transactional
-    public Registration addRegistrationWithTeamAndDancersassigncomp(RegistrationDTO registrationDTO, Long competitionId) {
+    public Registration addRegistrationWithTeamAndDancersassigncomp(RegistrationDTO registrationDTO, Long competitionId, Principal principal) {
+        // Récupérer le nom d'utilisateur de l'utilisateur connecté
+        String userName = principal.getName();
+
+
+        User user = userRepository.findByUsername(userName).get();
+
         Competition competition = comprepo.findById(competitionId).get();
 
         // Récupérer les frais par participant dans cette compétition
         float feesPerParticipant = competition.getFeesperparticipant();
 
         Registration registration = registrationDTO.getRegistration();
+        registration.setUsername(user.getUsername());
         Team team = registrationDTO.getTeam();
         List<Dancer> dancers = registrationDTO.getDancers();
 

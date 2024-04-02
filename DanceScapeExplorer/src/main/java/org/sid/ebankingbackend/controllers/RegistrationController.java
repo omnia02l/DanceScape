@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-
-
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -52,8 +51,9 @@ public class RegistrationController {
     }
 
     @PutMapping("/add_reg_with_comp_team_and_dancers/{competitionId}")
-    public Registration addRegistrationWithTeamAndDancersAssignComp(@RequestBody RegistrationDTO registrationDTO, @PathVariable Long competitionId) {
-        return iregservice.addRegistrationWithTeamAndDancersassigncomp(registrationDTO, competitionId);
+    public Registration addRegistrationWithTeamAndDancersAssignComp(@RequestBody RegistrationDTO registrationDTO, @PathVariable Long competitionId,
+                                                                    Principal principal) {
+        return iregservice.addRegistrationWithTeamAndDancersassigncomp(registrationDTO, competitionId,principal);
     }
     @PostMapping("/{registrationId}/send-emails")
     public void sendEmailsToDancersInTeam(@PathVariable Long registrationId,

@@ -41,7 +41,7 @@ public class Registration implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date Rejected_date;
     @Column(nullable = true)
-    private Long currentuserid;
+    private String username;
     @JsonIgnore
     @ManyToOne
     private  User user;
