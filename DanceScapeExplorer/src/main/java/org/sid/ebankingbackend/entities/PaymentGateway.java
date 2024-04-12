@@ -6,9 +6,10 @@ import lombok.Setter;
 import org.sid.ebankingbackend.models.User;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 
-    @Entity
+@Entity
    // @Table(name = "Paymentgateway")
     @Getter
     @Setter
@@ -32,6 +33,27 @@ import java.io.Serializable;
 
         @OneToOne
         private User user;
+    @Column(nullable = false)
+    private String currency;
 
-    }
+    @Column(nullable = false)
+    private Long amount;
+
+    @Column(nullable = false)
+    private String cardNumber;
+
+    @Column(nullable = false)
+    private String cvc;
+
+    @Column(nullable = false)
+    private String TypePayment;
+
+    @Column(nullable = false)
+    private String cardholderName;
+
+    @Column
+    private LocalDate datepaiement;
+}
+
+
 

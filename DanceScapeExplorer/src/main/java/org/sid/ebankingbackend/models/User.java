@@ -60,9 +60,8 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    @JsonIgnore
-    private Set<Orders> orders;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="customer")
+    private Set<Orders> Orderss;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
@@ -89,7 +88,10 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
+    public User(String customerName, String customerEmail) {
+        this.username=customerName;
+        this.email=customerEmail;
+    }
     public String getUserRole(){
         return this.getRoles().stream().toList().get(0).getName().toString();
     }

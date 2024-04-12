@@ -28,5 +28,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .build();
         //return UserDetailsImpl.build(user);
     }
+    public User saveCustomer(User customer){
+        return userRepository.save(customer);
+    }
 
+    public Long isCustomerPresent(User customer){
+        User customer1 = userRepository.findByEmailAndUsername(customer.getEmail(),customer.getUsername());
+        return customer1!=null ? customer1.getId(): null ;
+    }
 }

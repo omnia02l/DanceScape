@@ -5,23 +5,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-//@Table( name = "Shoppingcart")
-
-public class ShoppingCart implements Serializable {
+public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
     private double totalPrice;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="shoppingcart")
-    private Set<Product> Products;
-    @OneToOne
-    private Orders order;
+    private int quantity;
+    private String productName;
+    private float amount;
+
+    private Long productId;
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Product> products = new HashSet<>();
+   /* @OneToOne
+    @JsonIgnore
+    private Orders order;*/
 
 }
