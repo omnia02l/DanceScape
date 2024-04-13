@@ -12,4 +12,7 @@ import java.util.Map;
 public interface CompetitionRepository  extends JpaRepository<Competition,Long> {
     @Query("SELECT c.compname, t.teamname, t.dancers FROM Competition c JOIN c.teams t WHERE c.idcomp = :competitionId")
     List<Map<String, Object>> getCompetitionTeamsAndDancers(Long competitionId);
+
+    @Query("SELECT c FROM Competition c LEFT JOIN FETCH c.performances")
+    List<Competition> findAllWithPerformances();
 }

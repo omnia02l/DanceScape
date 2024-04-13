@@ -69,8 +69,8 @@ public class Competition implements Serializable {
     private Set<Team> teams;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "competition")
-    @JsonIgnore
-    private Set<Performance> performance;
+
+    private Set<Performance> performances;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     private Dancecategory dancecateg;
