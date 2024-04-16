@@ -19,7 +19,7 @@ public class OrderService {
 
     private OrderRepo orderRepository;
     private ProductRepo productRepository;
-private UserRepository customerRepository;
+    private UserRepository customerRepository;
     public OrderService(OrderRepo orderRepository, ProductRepo productRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
@@ -43,17 +43,31 @@ private UserRepository customerRepository;
                 int requestedQuantity = cart.getQuantity();
 
                 if (availableQuantity >= requestedQuantity) {
+                    // Sufficient stock available to fulfill the entire order
                     float cartAmount = product.getPrice() * requestedQuantity;
                     totalCartAmount += cartAmount;
+
+                    // Deduct requestedQuantity from availableQuantity
                     product.setQuantity(availableQuantity - requestedQuantity);
                     productRepository.save(product);
+
                     cart.setAmount(cartAmount);
                 } else {
+                    // Not enough stock available to fulfill the entire order
                     float cartAmount = product.getPrice() * availableQuantity;
                     totalCartAmount += cartAmount;
+
+                    // Update cart quantity to reflect the available stock
                     cart.setQuantity(availableQuantity);
                     cart.setAmount(cartAmount);
+
+                    // Set product quantity to 0 since all available stock is being used
+                    product.setQuantity(0);
+                    productRepository.save(product);
                 }
+
+
+
             }
         }
         return totalCartAmount;
@@ -121,5 +135,12 @@ private UserRepository customerRepository;
             Optional<Product> productOptional = productRepository.findById(productId);
             productOptional.ifPresent(product -> order.getProducts().add(product));
         }
+    }
+    /*public List<Orders> getOrderHistoryByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }*/
+
+    public List<Orders> getOrderHistoryByEmail(String email) {
+        return orderRepository.findByCustomerEmail(email);
     }
 }

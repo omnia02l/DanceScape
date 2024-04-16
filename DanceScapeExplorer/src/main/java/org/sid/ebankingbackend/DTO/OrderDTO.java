@@ -11,16 +11,20 @@ public class OrderDTO {
     private List<ShoppingCart> cartItems;
     private String customerEmail;
     private String customerName;
-
+    private float totalAmount; // Add this field for total amount
+    private String token; // Add this field for payment token
     public OrderDTO() {
     }
 
-    public OrderDTO(String orderDescription, List<ShoppingCart> cartItems, String customerEmail, String customerName) {
+    public OrderDTO(String orderDescription, List<ShoppingCart> cartItems, String customerEmail, String customerName, float totalAmount, String token) {
         this.orderDescription = orderDescription;
         this.cartItems = cartItems;
         this.customerEmail = customerEmail;
         this.customerName = customerName;
+        this.totalAmount = totalAmount;
+        this.token = token;
     }
+
 
     public String getOrderDescription() {
         return orderDescription;
@@ -53,6 +57,21 @@ public class OrderDTO {
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
+    public float getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(float totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     @Override
     public String toString() {
@@ -61,6 +80,8 @@ public class OrderDTO {
                 ", cartItems=" + cartItems +
                 ", customerEmail='" + customerEmail + '\'' +
                 ", customerName='" + customerName + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", token='" + token + '\'' +
                 '}';
     }
 }

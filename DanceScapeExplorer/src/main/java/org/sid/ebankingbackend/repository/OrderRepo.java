@@ -20,5 +20,7 @@ public interface OrderRepo extends JpaRepository<Orders, Long> {
             "GROUP BY p.title " +
             "ORDER BY COUNT(o) DESC")
     List<Object[]> findSalesCountByProductAndMonth(int month, int year);
+    //  List<Orders> findByUserId(Long userId);
+    // List<Orders> findByUserEmail(String email);
 
 }
