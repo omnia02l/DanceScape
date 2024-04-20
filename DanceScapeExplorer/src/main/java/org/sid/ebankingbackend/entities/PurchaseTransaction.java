@@ -14,17 +14,15 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@Table( name = "Purchasetransaction")
-public class PurchaseTransaction  implements Serializable {
+@Table( name = "PurchaseTransaction")
+public class PurchaseTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idPTransaction")
+    @Column(name = "idPTransaction")
     private float totalTr;
-    private String eticket;
-    @Temporal(TemporalType.DATE)
+    private String qrCode;
     private Date purchaseDate;
-    private  Long nbPlace;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Ticketcart ticketcart;
+    private Long nbPlace;
+
 
 }

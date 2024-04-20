@@ -44,6 +44,8 @@ public class User {
 
     private Boolean disabled = false;
 
+    private String discount;
+
     @NotBlank
     @Size(max = 50)
     @Email

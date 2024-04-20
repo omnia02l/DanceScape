@@ -1,0 +1,160 @@
+package org.sid.ebankingbackend.services.Tickets;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Aspect;
+import org.sid.ebankingbackend.entities.Places;
+import org.sid.ebankingbackend.entities.RowLabel;
+import org.sid.ebankingbackend.entities.Ticket;
+import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
+import org.sid.ebankingbackend.repository.Tickets.TicketRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+@Service
+@Slf4j
+@Aspect
+@Component
+@AllArgsConstructor
+public class PlacesServices implements IPlacesServices {
+    @Autowired
+    PlacesRepository placesRepository;
+    @Autowired
+    TicketRepository ticketRepository;
+    @Autowired
+    TicketService ticketService;
+
+    @Override
+    public List<Places> GetAllPlaces() {
+       return  placesRepository.findAll();
+
+    }
+
+    @Override
+    public Places GetPlaces(Long nb) {
+
+        return placesRepository.findBySeatNumber(nb);
+    }
+
+
+    public Places updatePlaceOccupation(Long id, boolean isOccupied) {
+        Places place = placesRepository.findById(id).orElseThrow(() -> new RuntimeException("Place not found"));
+        place.setOccupied(isOccupied);
+        return placesRepository.save(place);
+    }
+
+
+    @Override
+    public Places ModifyPlaces(Places places) {
+        return placesRepository.save(places);
+    }
+
+    @Override
+    public void DeletPlaces(Long id) {
+        placesRepository.deleteById(id);
+
+    }
+
+    public List<Places> GetAllPlacesRanger() {
+        // Use Sort to sort by rowLabel and then by seatNumber
+        Sort sort = Sort.by("rowLabel").ascending().and(Sort.by("seatNumber").ascending());
+        return placesRepository.findAll(sort);
+    }
+
+    @Scheduled(fixedRate = 60000) // Exécuter cette méthode toutes les 60 secondes
+    public void resetUnconfirmedSelections() {
+        List<Places> placesList = placesRepository.findAllByIsSelectedTrueAndIsOccupiedFalse();
+        if (!placesList.isEmpty()) {
+            for (Places place : placesList) {
+                place.setSelected(false);
+                placesRepository.save(place);
+            }
+            log.info("Unconfirmed selections have been reset");
+        }
+    }
+
+
+/*    public List<Places> confirmPlaces(List<Long> ids) {
+        List<Places> placesToConfirm = placesRepository.findAllByIdPlace(ids);
+        List<Places> confirmedPlaces = new ArrayList<>();
+
+        for (Places place : placesToConfirm) {
+            if (place.isSelected()) {
+                place.setOccupied(true);
+                confirmedPlaces.add(place);
+            }
+        }
+
+        return placesRepository.saveAll(confirmedPlaces);
+    }
+*/
+
+    @Transactional
+    public List<Places> confirmPlaces(Long userid,List<Long> ids) {
+        List<Places> confirmedPlaces = new ArrayList<>();
+
+        for (Long id : ids) {
+            Optional<Places> optionalPlace = placesRepository.findById(id);
+            optionalPlace.ifPresent(place -> {
+                if (place.isSelected()) {
+                    place.setOccupied(true);
+                    confirmedPlaces.add(place);
+
+                    // Générer un ticket si la place est occupée
+                    Ticket ticket = ticketService.generateTicket(userid,place);
+                    ticketRepository.save(ticket);
+                }
+            });
+        }
+
+        return placesRepository.saveAll(confirmedPlaces);
+    }
+
+    public Places togglePlaceSelection(Long id) {
+        Places place = placesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Place not found with id " + id));
+
+        // Inverser uniquement l'état 'isSelected' pour la sélection/désélection
+        place.setSelected(!place.isSelected());
+        //place.setOccupied(!place.isOccupied());
+        return placesRepository.save(place); // Retourner la place mise à jour
+    }
+
+
+
+    public Places findPlaceBySeatAndRow(Long seatNumber, RowLabel row) {
+        return placesRepository.findBySeatNumberAndRowLabel(seatNumber, row);
+    }
+
+    public Map<String, List<Map<String, Object>>> getSeatNumbersByRow(Long planId) {
+        Map<String, List<Map<String, Object>>> seatNumbersByRow = new HashMap<>();
+
+        // Récupérer les places associées à ce plan à partir de la base de données
+        List<Places> places = placesRepository.findByVenuePlan_IdPlan(planId);
+
+        for (Places place : places) {
+            String row = String.valueOf(place.getRowLabel());
+            Map<String, Object> seatInfo = new HashMap<>();
+            seatInfo.put("seatNumber", String.valueOf(place.getSeatNumber()));
+            boolean isOccupied = place.isOccupied() || (place.isOccupied() && place.isSelected());
+            boolean isSelected = !place.isOccupied() && place.isSelected();
+            seatInfo.put("isOccupied", isOccupied);
+            seatInfo.put("isSelected", isSelected);
+
+
+            seatNumbersByRow.computeIfAbsent(row, k -> new ArrayList<>()).add(seatInfo);
+        }
+
+        return seatNumbersByRow;
+    }
+
+}
+
+

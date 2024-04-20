@@ -14,13 +14,13 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@Table( name = "Ticketscanner")
-public class TicketScanner implements Serializable {
+@Table( name = "TicketScanner")
+public class TicketScanner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idScanner")
     private Long idScanner ;
-    private String AgentName;
+    private String agentName;
 
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -28,3 +28,4 @@ public class TicketScanner implements Serializable {
 
 
 }
+
