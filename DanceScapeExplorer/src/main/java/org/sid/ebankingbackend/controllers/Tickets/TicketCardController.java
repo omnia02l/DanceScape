@@ -7,6 +7,7 @@ import org.sid.ebankingbackend.services.Tickets.TicketCardService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -59,5 +60,14 @@ public class TicketCardController {
     public Ticketcard getTicketCardByUserIdAndDate(@PathVariable Long userId){
         return ticketCardService.getTicketCardByUserIdAndDate(userId);
 
+    }
+
+
+    @GetMapping("/getLastTicketCardDetails/{userId}")
+    public Map<String, Object> getLastTicketCardDetails(@PathVariable Long userId) {
+
+            Map<String, Object> ticketCardDetails = ticketCardService.getLastTicketCardDetails(userId);
+
+        return ticketCardDetails;
     }
 }

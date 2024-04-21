@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.sid.ebankingbackend.entities.*;
 
 import java.util.HashSet;
@@ -25,6 +23,8 @@ import javax.validation.constraints.Size;*/
                 @UniqueConstraint(columnNames = "email")
         })
 @Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -95,4 +95,6 @@ public class User {
     public String getUserRole(){
         return this.getRoles().stream().toList().get(0).getName().toString();
     }
+
+
 }

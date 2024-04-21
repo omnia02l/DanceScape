@@ -46,6 +46,12 @@ public class UserService {
         log.info("Validation du code de réduction '{}' : {}", discountCode, isValid);
         return isValid;
     }
+    public String getUserName(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::getUsername)  // Transformation de User en String (nom de l'utilisateur)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé avec l'ID : " + userId));
+    }
+
 }
 
 

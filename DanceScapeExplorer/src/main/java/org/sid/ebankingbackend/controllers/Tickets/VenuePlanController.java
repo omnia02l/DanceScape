@@ -35,8 +35,8 @@ VenuePlanService VenueService;
 
     @PostMapping("/AddTheatrePlan")
 
-    public VenuePlan addTheatrePlanWithSeats(@RequestBody VenuePlan plan){
-        return VenueService.addTheatrePlanWithSeats(plan);
+    public VenuePlan addTheatrePlanWithSeats(@RequestBody VenuePlan plan, @RequestParam Long venueId){
+        return VenueService.addTheatrePlanWithSeats(plan,venueId);
     }
 
 

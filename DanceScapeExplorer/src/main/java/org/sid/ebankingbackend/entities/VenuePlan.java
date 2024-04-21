@@ -35,4 +35,6 @@ public class VenuePlan {
     private Map<RowLabel, Integer> seatStructure;
     @OneToMany(cascade = CascadeType.ALL, mappedBy="venuePlan", fetch = FetchType.EAGER)
     private List<Places> places; // Liste des sièges plutôt que "places"
+    @OneToOne
+    private Venue venue;
 }

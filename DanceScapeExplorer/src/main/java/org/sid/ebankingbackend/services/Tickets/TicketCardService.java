@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -120,6 +117,44 @@ public class TicketCardService implements ITicketCardService {
         } else {
             throw new IllegalArgumentException("Aucun ticket récent trouvé ou code de réduction invalide.");
         }
+    }
+
+
+    @Transactional
+    public Map<String, Object> getLastTicketCardDetails(Long userId) {
+        Ticketcard lastTicketCard = ticketCardRepository.findFirstByUseridOrderByDateDesc(userId);
+        if (lastTicketCard == null) {
+            throw new IllegalArgumentException("Aucun Ticketcard trouvé pour cet utilisateur.");
+        }
+
+        Map<String, Object> details = new HashMap<>();
+        details.put("userName", userService.getUserName(userId)); // Méthode hypothétique pour récupérer le nom d'utilisateur
+        details.put("total", lastTicketCard.getTotal());
+        details.put("date", lastTicketCard.getDate());
+
+        List<Map<String, Object>> ticketsDetails = new ArrayList<>();
+        for (Ticket ticket : lastTicketCard.getTickets()) {
+            Map<String, Object> ticketDetails = new HashMap<>();
+            ticketDetails.put("refTicket", ticket.getRefTicket());
+            ticketDetails.put("expireDate", ticket.getExpireDate().toString());
+
+            // Ajout des détails de la place
+            if (ticket.getPlaces() != null) {
+                ticketDetails.put("seatNumber", ticket.getPlaces().getSeatNumber());
+                ticketDetails.put("rowLabel", ticket.getPlaces().getRowLabel().toString());
+            }
+
+            // Convertir le QR code en base64 pour affichage
+            if (ticket.getQrCode() != null) {
+                String qrCodeBase64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(ticket.getQrCode());
+                ticketDetails.put("qrCodeBase64", qrCodeBase64);
+            }
+
+            ticketsDetails.add(ticketDetails);
+        }
+        details.put("tickets", ticketsDetails);
+
+        return details;
     }
 
 }
