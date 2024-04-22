@@ -47,4 +47,9 @@ public class Performancecontroller {
     }
 
 
+    @GetMapping("/performance/{id}")
+    public Performance getPerformanceById(@PathVariable Long id) {
+        return perfserv.retrieveperformance(id);
+    }
+
 }

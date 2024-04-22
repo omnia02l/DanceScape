@@ -56,4 +56,13 @@ public class TeamController {
     public Map<String, List<String>> getTeamsWithDancers() {
         return teamserv.getTeamsWithDancers();
     }
+
+
+    @GetMapping("/by-competition/{competitionId}")
+    public List<Team> getTeamsByCompetitionId(@PathVariable Long competitionId) {
+        return teamserv.getTeamsByCompetitionId(competitionId);
+    }
+
+
+
 }

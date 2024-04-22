@@ -2,10 +2,7 @@ package org.sid.ebankingbackend.services;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.sid.ebankingbackend.entities.Competition;
-import org.sid.ebankingbackend.entities.Performance;
-import org.sid.ebankingbackend.entities.Registration;
-import org.sid.ebankingbackend.entities.Team;
+import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.repository.CompetitionRepository;
 import org.sid.ebankingbackend.repository.PerformanceRepository;
 import org.sid.ebankingbackend.repository.RegistrationRepository;
@@ -61,4 +58,15 @@ public class Performanceservice  implements IPerformanceservice{
         return performancesByCompetition;
     }
 
+
+
+    @Override
+    public Performance retrieveperformance(Long id) {
+        return perfrepo.findById(id).get();
+    }
+
 }
+
+
+
+

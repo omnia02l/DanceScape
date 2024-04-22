@@ -20,4 +20,7 @@ public interface TeamRepository extends JpaRepository<Team,Long> {
             nativeQuery = true)
     List<Object[]> findAllTeamsWithDetails();
 
+    @Query("SELECT t FROM Team t JOIN t.competitions c WHERE c.idcomp = :competitionId")
+    List<Team> findAllByCompetitionId(@Param("competitionId") Long competitionId);
+
 }

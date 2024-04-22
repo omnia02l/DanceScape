@@ -20,4 +20,5 @@ public interface ITeamservice {
 
     Map<String, List<String>> getCompetitionsWithTeams();
     Map<String, List<String>> getTeamsWithDancers();
+    List<Team> getTeamsByCompetitionId(Long competitionId);
 }

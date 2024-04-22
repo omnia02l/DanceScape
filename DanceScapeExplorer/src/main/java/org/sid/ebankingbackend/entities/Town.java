@@ -1,4 +1,5 @@
 package org.sid.ebankingbackend.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,9 +23,9 @@ public class Town implements Serializable {
     private String country;
     private Long population;
     private String landmarks;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "town")
-    private Set<Competition> competitions;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "town")
+    @JsonIgnore
     private Set<Venue> venues;
 
 }
