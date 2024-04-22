@@ -74,6 +74,11 @@ public class Teamservice implements ITeamservice {
 
         return teamDancersMap;
     }
+    @Override
+    public List<Team> getTeamsByCompetitionId(Long competitionId) {
+        return teamrepo.findAllByCompetitionId(competitionId);
+    }
+
 }
 
 

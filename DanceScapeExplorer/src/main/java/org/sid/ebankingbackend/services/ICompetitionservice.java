@@ -20,6 +20,6 @@ public interface ICompetitionservice {
     Competition retrieveCompetition(Long idcomp);
 
     void removeCompetition(Long idcomp);
-    Competition addCompetition(Competition c, Long categoryId, Long styleId);
+    Competition addCompetition(Competition c, Long categoryId, Long styleId,Long venueId);
     GenderstatDTO getGenderStatsForCompetition(Long competitionId);
 }

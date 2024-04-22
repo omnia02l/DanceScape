@@ -45,19 +45,21 @@ public class CompetitionController {
         compserv.removeCompetition(id);
     }
 
-    @PostMapping("/addcompetition/{categoryId}/{styleId}")
+    @PostMapping("/addcompetition/{categoryId}/{styleId}/{venueId}")
     public Competition addCompetitionWithCategoryAndStyle(@RequestBody Competition competition,
                                                           @PathVariable Long categoryId,
-                                                          @PathVariable Long styleId) {
-        return compserv.addCompetition(competition, categoryId, styleId);
+                                                          @PathVariable Long styleId,
+                                                          @PathVariable Long venueId) {
+        return compserv.addCompetition(competition, categoryId, styleId,venueId);
     }
-    @PutMapping("/updatecomp/{id}/{categoryId}/{styleId}")
+    @PutMapping("/updatecomp/{id}/{categoryId}/{styleId}/{venueId}")
     public Competition updateCompetitionWithCategoryAndStyle(@RequestBody Competition competition,
                                                           @PathVariable Long categoryId,
                                                           @PathVariable Long styleId,
-                                                             @PathVariable Long id) {
+                                                             @PathVariable Long id,
+                                                             @PathVariable Long venueId){
         competition.setIdcomp(id);
-        return compserv.addCompetition(competition, categoryId, styleId);
+        return compserv.addCompetition(competition, categoryId, styleId,venueId);
     }
 
     @PutMapping("/GenderStatsForCompetition/{competitionId}")

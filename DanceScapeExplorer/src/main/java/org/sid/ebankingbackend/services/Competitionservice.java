@@ -1,13 +1,7 @@
 package org.sid.ebankingbackend.services;
 import lombok.AllArgsConstructor;
-import org.sid.ebankingbackend.entities.Competition;
-import org.sid.ebankingbackend.entities.Dancecategory;
-import org.sid.ebankingbackend.entities.Dancestyle;
-import org.sid.ebankingbackend.entities.GenderstatDTO;
-import org.sid.ebankingbackend.repository.CompetitionRepository;
-import org.sid.ebankingbackend.repository.DancecategRepository;
-import org.sid.ebankingbackend.repository.DancerRepository;
-import org.sid.ebankingbackend.repository.DancestyleRepository;
+import org.sid.ebankingbackend.entities.*;
+import org.sid.ebankingbackend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +22,9 @@ public class Competitionservice implements ICompetitionservice {
     DancecategRepository categrepo;
     @Autowired
     DancerRepository dancerepo;
+    @Autowired
+    VenueRepository venrepo;
+
 
     @Override
     public List<Competition> retrieveAllCompetitions() {
@@ -55,20 +52,31 @@ public class Competitionservice implements ICompetitionservice {
     }
 
     @Override
-    public Competition addCompetition(Competition c, Long categoryId, Long styleId) {
+    public Competition addCompetition(Competition c, Long categoryId, Long styleId,Long venueId) {
         // Récupération de la catégorie de danse sélectionnée
         Dancecategory category = categrepo.findById(categoryId).get();
 
         // Récupération du style de danse sélectionné
         Dancestyle style = stylrepo.findById(styleId).get();
-
+        // Récupération de la venue sélectionnée
+        Venue venue = venrepo.findById(venueId).get();
         // Assignation de la catégorie et du style à la compétition
         c.setDancecateg(category);
         c.setStyle(style.getStyledname());
-
+        c.setVenue(venue);
         // Enregistrement de la compétition
         return comprepo.save(c);
     }
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public GenderstatDTO getGenderStatsForCompetition(Long competitionId) {

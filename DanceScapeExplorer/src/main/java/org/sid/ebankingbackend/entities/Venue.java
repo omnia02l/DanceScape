@@ -1,5 +1,6 @@
 package org.sid.ebankingbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-
+import java.util.Set;
 
 
 @Entity
@@ -20,6 +21,7 @@ public class Venue implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idvenue;
+    private String vname;
     private String vaddress;
     private Long capacity;
     private String contact_person;
@@ -31,6 +33,12 @@ public class Venue implements Serializable {
     private String venueimage;
     @ManyToOne
     private Town town;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venue")
+    @JsonIgnore
+    private Set<Competition> competitions;
+    public Venue(Long id) {
+        this.idvenue = id;
+    }
 
 
 }

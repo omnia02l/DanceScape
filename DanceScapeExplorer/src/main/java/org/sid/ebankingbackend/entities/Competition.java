@@ -76,7 +76,7 @@ public class Competition implements Serializable {
     private Dancecategory dancecateg;
 
     @ManyToOne
-    private Town town;
+    private Venue venue;
 
 
 
