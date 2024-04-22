@@ -52,6 +52,10 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé avec l'ID : " + userId));
     }
 
+    public User getUser(Long id){
+        return userRepository.findById(id).get();
+    }
+
 }
 
 

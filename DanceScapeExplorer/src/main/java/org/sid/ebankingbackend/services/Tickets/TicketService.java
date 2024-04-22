@@ -10,6 +10,7 @@ import org.sid.ebankingbackend.repository.Tickets.PriceRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketCardRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketRepository;
 import org.sid.ebankingbackend.repository.UserRepository;
+import org.sid.ebankingbackend.services.Tickets.Email.EmailService;
 import org.sid.ebankingbackend.services.Tickets.QrCode.QRCodeGenerator;
 import org.sid.ebankingbackend.services.Whattsapp.WhatsAppService;
 import org.slf4j.Logger;
@@ -54,6 +55,9 @@ public class TicketService implements ITicketService {
     UserRepository userRepository;
     @Autowired
     QRCodeGenerator generateQRCodeImage;
+
+    @Autowired
+    private EmailService emailService;
     private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
 
 
@@ -92,7 +96,8 @@ public class TicketService implements ITicketService {
 
 
         // Définir la disponibilité, la date d'expiration, le lieu du ticket
-        newTicket.setDisponibility(true);
+        newTicket.setScanned(false);
+        newTicket.setDisponibility(false);
         newTicket.setExpireDate(generateExpireDate());
         newTicket.setCreationDate(new Date());
 
@@ -232,6 +237,28 @@ public class TicketService implements ITicketService {
 
     }
 
+
+    @Transactional
+    public void processTicket(String ref) throws Exception {
+        Ticket ticket = ticketRepository.findByRefTicket(ref);
+        if (ticket != null) {
+            if (ticket.isScanned()) {
+                throw new IllegalStateException("Ticket already scanned");
+            } else {
+                ticket.setScanned(true);
+                ticketRepository.save(ticket);
+
+                // Supposons que chaque ticket a une référence vers un utilisateur
+                User user = userService.getUser(ticket.getUserid());
+                if (user != null) {
+                    String emailContent = "You are now eligible to vote.";
+                    emailService.sendEmail(user.getEmail(), "Voting Eligibility", emailContent);
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("Ticket not found");
+        }
+    }
 
 }
 

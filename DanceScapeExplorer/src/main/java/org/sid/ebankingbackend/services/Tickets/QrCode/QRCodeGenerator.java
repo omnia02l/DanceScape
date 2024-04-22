@@ -24,10 +24,12 @@ public class QRCodeGenerator {
 
     public byte[] generateQRCodeImage(Ticket ticket) throws Exception {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        String data = "Ticket ID: " + ticket.getIdTicket() +
-                ", Ref: " + ticket.getRefTicket() +
-                ", Expire: " + ticket.getExpireDate() +
-                ", Type: " + ticket.getTypeTicket();
+        String data = "{" +
+                "\"idTicket\":\"" + ticket.getIdTicket() + "\"," +
+                "\"refTicket\":\"" + ticket.getRefTicket() + "\"," +
+                "\"expireDate\":\"" + ticket.getExpireDate() + "\"," +
+                "\"typeTicket\":\"" + ticket.getTypeTicket() + "\"" +
+                "}";
 
         BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 350, 350);
 
@@ -37,4 +39,5 @@ public class QRCodeGenerator {
 
         return pngOutputStream.toByteArray();
     }
+
 }

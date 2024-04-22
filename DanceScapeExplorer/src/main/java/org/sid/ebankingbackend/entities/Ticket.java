@@ -24,6 +24,7 @@ public class Ticket {
     private Long idTicket ;
     private String refTicket;
     private boolean disponibility;
+    private boolean Scanned;
     @Lob
     @Column(name = "qr_code", columnDefinition = "MEDIUMBLOB")
     private byte[] qrCode;
@@ -45,8 +46,6 @@ public class Ticket {
 
     @ManyToOne(cascade = CascadeType.ALL)
     Price price;
-
-
 
 
 

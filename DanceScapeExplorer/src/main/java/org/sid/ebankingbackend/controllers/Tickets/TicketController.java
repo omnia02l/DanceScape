@@ -7,6 +7,8 @@ import org.sid.ebankingbackend.repository.Tickets.TicketCardRepository;
 import org.sid.ebankingbackend.services.Tickets.TicketCardService;
 import org.sid.ebankingbackend.services.Tickets.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,4 +66,19 @@ public class TicketController  {
         ticketService.sendDiscountCode(userId,discountCode);
     }
 
+
+    @PostMapping("/process/{ref}")
+    public ResponseEntity<String> processTicket(@PathVariable String ref) {
+        try {
+            ticketService.processTicket(ref);
+            return ResponseEntity.ok("Ticket processed successfully and email sent.");
+        } catch (IllegalStateException e) {
+            // Return a custom message if the ticket has already been scanned
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ticket already scanned.");
+        } catch (Exception e) {
+            // Other exceptions, e.g., ticket not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
+
+}

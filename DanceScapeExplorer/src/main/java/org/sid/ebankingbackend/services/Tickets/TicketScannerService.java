@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.sid.ebankingbackend.entities.TicketScanner;
+import org.sid.ebankingbackend.models.User;
 import org.sid.ebankingbackend.repository.Tickets.TicketScannerRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,10 @@ public class TicketScannerService implements ITicketScannerService{
         ticketScannerRepository.deleteById(id);
 
     }
+
+
+
+
 }
 
 
