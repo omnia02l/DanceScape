@@ -1,6 +1,7 @@
 package org.sid.ebankingbackend.controllers;
 
 import org.sid.ebankingbackend.entities.Dancestyle;
+import org.sid.ebankingbackend.services.Dancestyleservice;
 import org.sid.ebankingbackend.services.IDancestyleservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.Set;
 public class DancestyleController {
     @Autowired
     IDancestyleservice styleserv;
+
     @GetMapping("/retrieve_all_styles")
     public List<Dancestyle> getDancestyles() {
         List<Dancestyle> liststyle = styleserv.retrieveAllDancestyles();
@@ -49,6 +51,12 @@ public class DancestyleController {
     @GetMapping("/dancestyles/category/{categoryId}")
     public Set<Dancestyle> getStylesByCategoryId(@PathVariable Long categoryId) {
         return styleserv.getStylesByCategoryId(categoryId);
+    }
+
+
+    @GetMapping("/distinctStyledNames")
+    public List<String> getDistinctStyledNames() {
+        return styleserv.getAllDistinctStyledNames();
     }
 
 }

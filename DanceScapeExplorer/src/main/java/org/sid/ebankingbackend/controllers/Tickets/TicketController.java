@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.sid.ebankingbackend.entities.Ticket;
 import org.sid.ebankingbackend.entities.TrancheAge;
 import org.sid.ebankingbackend.repository.Tickets.TicketCardRepository;
+import org.sid.ebankingbackend.services.Tickets.MonthlyTicketStatsDTO;
 import org.sid.ebankingbackend.services.Tickets.TicketCardService;
 import org.sid.ebankingbackend.services.Tickets.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -81,4 +83,19 @@ public class TicketController  {
         }
     }
 
+
+    @GetMapping("/ticketsByStyleAndYear")
+    public List<Object[]> getTicketsByStyleAndYearRange(
+            @RequestParam String styleName,
+            @RequestParam int startYear,
+            @RequestParam int endYear) {
+        return ticketService.getTicketCountsByStyleAndYearRange(styleName, startYear, endYear);
+    }
+    @GetMapping("/ticketCountsForAllStyles/{year}")
+    public ResponseEntity<Map<Integer, Map<String, List<MonthlyTicketStatsDTO>>>> getTicketCountsForAllStyles(@PathVariable int year) {
+        Map<Integer, Map<String, List<MonthlyTicketStatsDTO>>> stats = ticketService.getTicketCountsByYearForAllStyles(year);
+        return ResponseEntity.ok(stats);
+    }
+
 }
+

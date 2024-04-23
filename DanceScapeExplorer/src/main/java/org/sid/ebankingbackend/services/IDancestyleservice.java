@@ -2,6 +2,7 @@ package org.sid.ebankingbackend.services;
 
 import org.sid.ebankingbackend.entities.Dancecategory;
 import org.sid.ebankingbackend.entities.Dancestyle;
+import org.springframework.data.jpa.repository.Query;
 
 
 import java.util.List;
@@ -20,4 +21,8 @@ public interface IDancestyleservice {
      Dancecategory addDanceStyleToCategory(Long id, Dancestyle dancestyle);
     Dancecategory removeDanceStyleFromCategory(Long categoryId, Long danceStyleId);
     Set<Dancestyle> getStylesByCategoryId(Long categoryId);
+    public List<String> getAllDistinctStyledNames();
+
+
+
 }

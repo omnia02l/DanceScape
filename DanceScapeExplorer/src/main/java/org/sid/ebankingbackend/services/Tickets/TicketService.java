@@ -28,10 +28,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -258,6 +255,28 @@ public class TicketService implements ITicketService {
         } else {
             throw new IllegalArgumentException("Ticket not found");
         }
+    }
+
+
+    public List<Object[]> getTicketCountsByStyleAndYearRange(String styleName, int startYear, int endYear) {
+        return ticketRepository.countTicketsByStyleAndYear(styleName, startYear, endYear);
+    }
+
+    public Map<Integer, Map<String, List<MonthlyTicketStatsDTO>>> getTicketCountsByYearForAllStyles(int year) {
+        List<Object[]> results = ticketRepository.countTicketsByMonthForAllStyles(year);
+        Map<Integer, Map<String, List<MonthlyTicketStatsDTO>>> yearlyStats = new HashMap<>();
+
+        results.forEach(result -> {
+            String styleName = (String) result[0];
+            Integer month = (Integer) result[1];
+            Long ticketCount = (Long) result[2];
+
+            Map<String, List<MonthlyTicketStatsDTO>> styleStats = yearlyStats.computeIfAbsent(year, k -> new HashMap<>());
+            List<MonthlyTicketStatsDTO> monthlyStats = styleStats.computeIfAbsent(styleName, k -> new ArrayList<>());
+            monthlyStats.add(new MonthlyTicketStatsDTO(month, ticketCount));
+        });
+
+        return yearlyStats;
     }
 
 }

@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface DancestyleRepository extends JpaRepository<Dancestyle,Long> {
 
+    @Query("SELECT distinct d.styledname FROM Dancestyle d")
+    List<String> findAllDistinctStyledNames();
 }

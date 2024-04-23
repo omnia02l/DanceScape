@@ -21,7 +21,6 @@ public class Dancestyleservice implements IDancestyleservice {
     DancestyleRepository stylerepo;
     @Autowired
     DancecategRepository categrepo;
-
     @Override
     public List<Dancestyle> retrieveAllDancestyles() {
         return stylerepo.findAll();
@@ -81,5 +80,8 @@ public class Dancestyleservice implements IDancestyleservice {
             return dancecategory.getDancestyles();
 
     }
-
+    @Override
+    public List<String> getAllDistinctStyledNames() {
+        return stylerepo.findAllDistinctStyledNames();
+    }
 }
