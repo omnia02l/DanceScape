@@ -4,11 +4,13 @@ package org.sid.ebankingbackend.controllers;
 import org.sid.ebankingbackend.entities.Town;
 
 import org.sid.ebankingbackend.entities.TownWithVenuesDTO;
+import org.sid.ebankingbackend.entities.TownsandVenuesDTO;
 import org.sid.ebankingbackend.entities.Venue;
 import org.sid.ebankingbackend.services.ITownservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,19 +29,23 @@ public class TownController {
         return list;
     }
 
-    @PostMapping("/add_town")
-    public Town addtown(@RequestBody Town t) {
-        Town town = townserv.addTown(t);
-        return town;
+    @PostMapping("/addWithVenues")
+    public TownsandVenuesDTO addTownWithVenues(@RequestBody TownsandVenuesDTO townWithVenuesDTO) {
+        Town town = townWithVenuesDTO.getTown();
+        List<Venue> venues = new ArrayList<>(townWithVenuesDTO.getVenues());
+
+        return townserv.addTownWithVenues(town, venues);
     }
 
-    @PutMapping("/update_town/{id}")
-    public Town  updateTown(@PathVariable Long id, @RequestBody Town t) {
+    /* @PutMapping("/update_town/{id}")
+     public TownsandVenuesDTO  updateTown(@PathVariable Long id, @RequestBody TownsandVenuesDTO townWithVenuesDTO) {
 
-        t.setIdtown(id);
-        Town town = townserv.addTown(t);
-        return town;
-    }
+         townWithVenuesDTO.getTown().setIdtown(id);
+         Town town = townWithVenuesDTO.getTown();
+         List<Venue> venues = new ArrayList<>(townWithVenuesDTO.getVenues());
+         TownsandVenuesDTO dto = townserv.addTownWithVenues(town, venues);
+         return dto;
+     }*/
     @GetMapping("/retrieve_town/{id}")
     public Town retrieveTown(@PathVariable Long id) {
         Town town = townserv.retrieveTown(id);

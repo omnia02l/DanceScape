@@ -2,6 +2,7 @@ package org.sid.ebankingbackend.services;
 
 import org.sid.ebankingbackend.entities.Town;
 import org.sid.ebankingbackend.entities.TownWithVenuesDTO;
+import org.sid.ebankingbackend.entities.TownsandVenuesDTO;
 import org.sid.ebankingbackend.entities.Venue;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface ITownservice {
 
     List<Town> retrieveAllTowns();
 
-    Town addTown(Town town);
+    TownsandVenuesDTO addTownWithVenues(Town town, List<Venue> venues);
 
 
 

@@ -1,10 +1,7 @@
 package org.sid.ebankingbackend.services;
 
 import lombok.AllArgsConstructor;
-import org.sid.ebankingbackend.entities.Dancecategory;
-import org.sid.ebankingbackend.entities.Town;
-import org.sid.ebankingbackend.entities.TownWithVenuesDTO;
-import org.sid.ebankingbackend.entities.Venue;
+import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.repository.DancecategRepository;
 import org.sid.ebankingbackend.repository.DancestyleRepository;
 import org.sid.ebankingbackend.repository.TownRepository;
@@ -28,16 +25,18 @@ public class Townservice implements ITownservice {
     }
 
     @Override
-    public Town addTown(Town town) {
-        // Vérifier si getVenues() renvoie null
-        if (town.getVenues() == null) {
-            town.setVenues(new HashSet<>()); // Ou une autre initialisation selon votre logique
-        } else {
-            for (Venue venue : town.getVenues()) {
-                venue.setTown(town);
-            }
+    public TownsandVenuesDTO addTownWithVenues(Town town, List<Venue> venues) {
+        // Sauvegarder la ville
+        Town savedTown = townrepo.save(town);
+
+        // Associer la ville à chaque lieu et sauvegarder les lieux
+        for (Venue venue : venues) {
+            venue.setTown(savedTown);
+            venuerepo.save(venue);
         }
-        return townrepo.save(town);
+
+        // Retourner la ville avec les lieux associés
+        return new TownsandVenuesDTO(savedTown, new HashSet<>(venues));
     }
 
 
