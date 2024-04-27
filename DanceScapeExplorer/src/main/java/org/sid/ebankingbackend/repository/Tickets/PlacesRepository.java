@@ -26,4 +26,6 @@ public interface PlacesRepository extends JpaRepository<Places,Long> {
     List<Places> findAllByIdPlace(@Param("ids") List<Long> ids);
 
     List<Places> findAllByIsSelectedTrueAndIsOccupiedFalse();
+
+    Places findBySeatNumberAndRowLabelAndVenuePlan_IdPlan(Long seatNumber, RowLabel row, Long venuePlanId);
 }

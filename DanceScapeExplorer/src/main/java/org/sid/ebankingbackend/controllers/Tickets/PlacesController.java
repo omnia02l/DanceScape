@@ -59,13 +59,13 @@ public class PlacesController {
 
 
     @GetMapping("/findPlace")
-    public Places findPlaceBySeatAndRow(@RequestParam Long seatNumber, @RequestParam RowLabel row) {
-        return  placesService.findPlaceBySeatAndRow(seatNumber,row);
+    public Places findPlaceBySeatAndRow(@RequestParam Long seatNumber, @RequestParam RowLabel row,@RequestParam Long venuePlanId) {
+        return  placesService.findPlaceBySeatAndRowAndVenuePlan(seatNumber,row,venuePlanId);
     }
 
     @PutMapping("/confirmPlaces/{userid}")
-    public List<Places> confirmPlaces(@PathVariable Long userid,@RequestBody List<Long> places) {
-        return placesService.confirmPlaces(userid,places);
+    public List<Places> confirmPlaces(@RequestParam Long venuePlanId,@PathVariable Long userid,@RequestBody List<Long> places) {
+        return placesService.confirmPlaces(venuePlanId,userid,places);
     }
 
 

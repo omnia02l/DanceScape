@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VenuePlanRepository extends JpaRepository<VenuePlan, Long> {
 
+    VenuePlan findByVenue_Idvenue(Long venueId);
 }

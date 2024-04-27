@@ -7,8 +7,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.sid.ebankingbackend.entities.Places;
 import org.sid.ebankingbackend.entities.RowLabel;
 import org.sid.ebankingbackend.entities.Ticket;
+import org.sid.ebankingbackend.entities.VenuePlan;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketRepository;
+import org.sid.ebankingbackend.repository.Tickets.VenuePlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +32,8 @@ public class PlacesServices implements IPlacesServices {
     TicketRepository ticketRepository;
     @Autowired
     TicketService ticketService;
+    @Autowired
+    VenuePlanRepository venuePlanRepository;
 
     @Override
     public List<Places> GetAllPlaces() {
@@ -97,13 +101,13 @@ public class PlacesServices implements IPlacesServices {
 */
 
     @Transactional
-    public List<Places> confirmPlaces(Long userid,List<Long> ids) {
+    public List<Places> confirmPlaces(Long venuePlanId,Long userid,List<Long> ids) {
         List<Places> confirmedPlaces = new ArrayList<>();
 
         for (Long id : ids) {
             Optional<Places> optionalPlace = placesRepository.findById(id);
             optionalPlace.ifPresent(place -> {
-                if (place.isSelected()) {
+                if (place.getVenuePlan().getIdPlan().equals(venuePlanId) && place.isSelected()) {
                     place.setOccupied(true);
                     confirmedPlaces.add(place);
 
@@ -129,15 +133,16 @@ public class PlacesServices implements IPlacesServices {
 
 
 
-    public Places findPlaceBySeatAndRow(Long seatNumber, RowLabel row) {
-        return placesRepository.findBySeatNumberAndRowLabel(seatNumber, row);
+    public Places findPlaceBySeatAndRowAndVenuePlan(Long seatNumber, RowLabel row, Long venuePlanId) {
+        return placesRepository.findBySeatNumberAndRowLabelAndVenuePlan_IdPlan(seatNumber, row, venuePlanId);
     }
 
-    public Map<String, List<Map<String, Object>>> getSeatNumbersByRow(Long planId) {
-        Map<String, List<Map<String, Object>>> seatNumbersByRow = new HashMap<>();
 
+    public Map<String, List<Map<String, Object>>> getSeatNumbersByRow(Long venueId) {
+        Map<String, List<Map<String, Object>>> seatNumbersByRow = new HashMap<>();
+        VenuePlan venuePlan = venuePlanRepository.findByVenue_Idvenue(venueId);
         // Récupérer les places associées à ce plan à partir de la base de données
-        List<Places> places = placesRepository.findByVenuePlan_IdPlan(planId);
+        List<Places> places = placesRepository.findByVenuePlan_IdPlan(venuePlan.getIdPlan());
 
         for (Places place : places) {
             String row = String.valueOf(place.getRowLabel());
