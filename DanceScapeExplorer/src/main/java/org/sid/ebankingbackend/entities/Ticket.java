@@ -1,5 +1,6 @@
 package org.sid.ebankingbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class Ticket {
     private Long idTicket ;
     private String refTicket;
     private boolean disponibility;
-    private boolean Scanned;
+    private boolean scanned;
     @Lob
     @Column(name = "qr_code", columnDefinition = "MEDIUMBLOB")
     private byte[] qrCode;
@@ -32,7 +33,7 @@ public class Ticket {
     @Transient // Ce champ n'a pas besoin d'être persisté en base de données
     private String qrCodeBase64;
 
-
+    @JsonIgnore
     private Date expireDate ;
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;

@@ -28,7 +28,8 @@ public class QRCodeGenerator {
                 "\"idTicket\":\"" + ticket.getIdTicket() + "\"," +
                 "\"refTicket\":\"" + ticket.getRefTicket() + "\"," +
                 "\"expireDate\":\"" + ticket.getExpireDate() + "\"," +
-                "\"typeTicket\":\"" + ticket.getTypeTicket() + "\"" +
+                "\"typeTicket\":\"" + ticket.getTypeTicket() + "\"," +
+                "\"scanned\":\"" + ticket.isScanned() + "\"" +
                 "}";
 
         BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 350, 350);
