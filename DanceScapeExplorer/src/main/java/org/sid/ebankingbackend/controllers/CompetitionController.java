@@ -66,7 +66,14 @@ public class CompetitionController {
     public GenderstatDTO GenderStatsForCompetition(@PathVariable Long competitionId) {
         return compserv.getGenderStatsForCompetition(competitionId);
     }
-
+    @GetMapping("/statcountByDanceStyle")
+    public Map<String, Long> getCompetitionCountByDanceStyle() {
+        return compserv.getCompetitionCountByDanceStyle();
+    }
+    @GetMapping("/statparticipants")
+    public Map<String, Long> getNumberOfParticipantsPerCompetition() {
+        return compserv.getNumberOfParticipantsPerCompetition();
+    }
 
 
 }

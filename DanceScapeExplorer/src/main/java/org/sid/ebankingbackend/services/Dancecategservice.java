@@ -1,8 +1,10 @@
 package org.sid.ebankingbackend.services;
 import lombok.AllArgsConstructor;
 import org.sid.ebankingbackend.entities.Dancecategory;
+import org.sid.ebankingbackend.entities.Music;
 import org.sid.ebankingbackend.repository.DancecategRepository;
 import org.sid.ebankingbackend.repository.DancestyleRepository;
+import org.sid.ebankingbackend.repository.MusicRepository;
 import org.sid.ebankingbackend.services.IDancecategservice;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +22,8 @@ public class Dancecategservice implements IDancecategservice {
     DancecategRepository categrepo;
     @Autowired
     DancestyleRepository stylerepo;
+    @Autowired
+    MusicRepository musicrepo;
     @Override
     public List<Dancecategory> retrieveAllDancecategories() {return categrepo.findAll();}
 
