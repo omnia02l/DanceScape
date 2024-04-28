@@ -18,4 +18,25 @@ public interface TicketCardRepository extends JpaRepository<Ticketcard,Long> {
     List<Ticketcard> findByUserid(Long userId);
 
     Ticketcard findFirstByUseridOrderByDateDesc(Long userId);
+   /* @Query("SELECT tc FROM Ticketcard tc " +
+            "JOIN tc.tickets t " +
+            "JOIN t.places p " +
+            "JOIN p.venuePlan vp " +
+            "JOIN vp.venue v " +
+            "JOIN v.competitions comp " +
+            "WHERE tc.userid = :userId " +
+            "AND comp.idcomp = :competitionId " +
+            "ORDER BY tc.date DESC")
+    List<Ticketcard> findByUserIdAndCompetition(@Param("userId") Long userId, @Param("competitionId") Long competitionId);
+}*/
+   @Query("SELECT tc FROM Ticketcard tc " +
+           "JOIN tc.tickets t " +
+           "JOIN t.places p " +
+           "JOIN p.venuePlan vp " +
+           "JOIN vp.venue v " +
+           "JOIN v.competitions c " +
+           "WHERE tc.userid = :userId AND c.idcomp = :competitionId " +
+           "ORDER BY tc.date DESC")
+   List<Ticketcard> findFirstByUseridAndCompetitionOrderByDateDesc(@Param("userId") Long userId, @Param("competitionId") Long competitionId);
 }
+

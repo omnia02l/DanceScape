@@ -56,9 +56,9 @@ public class TicketCardController {
          return  ticketCardService.applyDiscountToMostRecentTicketCard(userId, discountCode);
 
     }
-    @GetMapping("/getTicketCardByUserIdAndDate/{userId}")
-    public Ticketcard getTicketCardByUserIdAndDate(@PathVariable Long userId){
-        return ticketCardService.getTicketCardByUserIdAndDate(userId);
+    @GetMapping("/getTicketCardByUserIdAndDateAndCompteition/{userId}/{competitionId}")
+    public Ticketcard getTicketCardByUserIdAndDate(@PathVariable Long userId,@PathVariable Long competitionId){
+        return ticketCardService.getTicketCardByUserIdAndCompetitionAndDate(userId,competitionId);
 
     }
 

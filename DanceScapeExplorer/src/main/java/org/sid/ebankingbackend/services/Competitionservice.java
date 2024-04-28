@@ -91,6 +91,13 @@ public class Competitionservice implements ICompetitionservice {
 
         return genderStats;
     }
+
+
+    public Long getVenuePlanIdByCompetitionId(Long competitionId) {
+        return comprepo.findVenuePlanIdByCompetitionId(competitionId)
+                .orElseThrow(() -> new RuntimeException("Competition or Venue Plan not found"));
+    }
+
 }
 
 

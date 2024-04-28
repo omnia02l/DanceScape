@@ -2,6 +2,7 @@ package org.sid.ebankingbackend.controllers;
 
 import org.sid.ebankingbackend.entities.Competition;
 import org.sid.ebankingbackend.entities.GenderstatDTO;
+import org.sid.ebankingbackend.services.Competitionservice;
 import org.sid.ebankingbackend.services.ICompetitionservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,8 @@ import java.util.Map;
 public class CompetitionController {
     @Autowired
     ICompetitionservice compserv;
+    @Autowired
+    Competitionservice competitionservice;
     @GetMapping("/retrieve_all_comps")
     public List<Competition> getCompetitions() {
         List<Competition> listcomps = compserv.retrieveAllCompetitions();
@@ -67,6 +70,10 @@ public class CompetitionController {
         return compserv.getGenderStatsForCompetition(competitionId);
     }
 
+    @GetMapping("/venue-plan-id/{id}")
+    public Long getVenuePlanIdByCompetitionId(@PathVariable("id") Long competitionId) {
+        return competitionservice.getVenuePlanIdByCompetitionId(competitionId);
+    }
 
 
 }

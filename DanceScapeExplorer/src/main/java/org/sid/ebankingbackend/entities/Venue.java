@@ -40,6 +40,10 @@ public class Venue implements Serializable {
         this.idvenue = id;
     }
 
+    @OneToOne
+    private VenuePlan venuePlan ;
+
+
 
 }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -72,7 +73,7 @@ public class TicketCardService implements ITicketCardService {
         // Sauvegarder le panier dans la base de données
         return ticketCardRepository.save(ticketCard);
     }
-    public Ticketcard getTicketCardByUserIdAndDate(Long userId) {
+    /*public Ticketcard getTicketCardByUserIdAndDate(Long userId) {
         Ticketcard ticketCard = ticketCardRepository.findFirstByUseridOrderByDateDesc(userId);
         if (ticketCard != null) {
             for (Ticket ticket : ticketCard.getTickets()) {
@@ -87,7 +88,7 @@ public class TicketCardService implements ITicketCardService {
             }
         }
         return ticketCard;
-    }
+    }*/
 
 
 
@@ -120,8 +121,8 @@ public class TicketCardService implements ITicketCardService {
     }
 
 
-    @Transactional
-    public Map<String, Object> getLastTicketCardDetails(Long userId) {
+     @Transactional
+   public Map<String, Object> getLastTicketCardDetails(Long userId) {
         Ticketcard lastTicketCard = ticketCardRepository.findFirstByUseridOrderByDateDesc(userId);
         if (lastTicketCard == null) {
             throw new IllegalArgumentException("Aucun Ticketcard trouvé pour cet utilisateur.");
@@ -155,6 +156,25 @@ public class TicketCardService implements ITicketCardService {
         details.put("tickets", ticketsDetails);
 
         return details;
+    }
+
+    public Ticketcard getTicketCardByUserIdAndCompetitionAndDate(Long userId, Long competitionId) {
+        List<Ticketcard> ticketCards = ticketCardRepository.findFirstByUseridAndCompetitionOrderByDateDesc(userId, competitionId);
+        if (ticketCards.isEmpty()) {
+            throw new IllegalArgumentException("No Ticketcard found for this user and competition.");
+        }
+
+        Ticketcard ticketCard = ticketCards.get(0); // Assuming you only want the most recent one
+
+        // Proceed to format QR codes
+        for (Ticket ticket : ticketCard.getTickets()) {
+            if (ticket.getQrCode() != null) {
+                String qrCodeBase64 = Base64.getEncoder().encodeToString(ticket.getQrCode());
+                String qrCodeDataUri = "data:image/png;base64," + qrCodeBase64;
+                ticket.setQrCodeBase64(qrCodeDataUri);
+            }
+        }
+        return ticketCard;
     }
 
 }

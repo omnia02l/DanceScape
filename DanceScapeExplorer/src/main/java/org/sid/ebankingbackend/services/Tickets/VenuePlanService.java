@@ -58,6 +58,8 @@ public class VenuePlanService implements IVenuePlanService{
                 placesRepository.save(seat); // Enregistre le siège
             }
         }
+        venue.setVenuePlan(savedPlan);
+        venueRepository.save(venue);
 
         return savedPlan; // Renvoie le plan de théâtre avec ses sièges associés
     }

@@ -141,6 +141,10 @@ public class PlacesServices implements IPlacesServices {
     public Map<String, List<Map<String, Object>>> getSeatNumbersByRow(Long venueId) {
         Map<String, List<Map<String, Object>>> seatNumbersByRow = new HashMap<>();
         VenuePlan venuePlan = venuePlanRepository.findByVenue_Idvenue(venueId);
+        if (venuePlan == null) {
+            // Handle the null case appropriately
+            throw new EntityNotFoundException("No VenuePlan found for venue ID: " + venueId);
+        }
         // Récupérer les places associées à ce plan à partir de la base de données
         List<Places> places = placesRepository.findByVenuePlan_IdPlan(venuePlan.getIdPlan());
 
