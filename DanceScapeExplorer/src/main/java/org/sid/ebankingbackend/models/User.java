@@ -9,14 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.sid.ebankingbackend.entities.*;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-/*import javax.validation.Validator.*;
-import jakarta.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;*/
 
 @Entity
 @Table(	name = "users",
@@ -60,6 +54,10 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore
+    private Set<Vote> votes;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<Orders> orders;
@@ -76,6 +74,9 @@ public class User {
     @JsonIgnore
     private Set<Claim> Claims;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    @JsonIgnore
+    private Set<ResultComment> resultComments;
 
     @OneToOne
     @JsonIgnore

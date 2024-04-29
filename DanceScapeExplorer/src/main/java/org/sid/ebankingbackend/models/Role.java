@@ -1,7 +1,11 @@
 package org.sid.ebankingbackend.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.sid.ebankingbackend.entities.Vote;
+
+import java.util.Set;
 
 
 @Entity
@@ -14,6 +18,11 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
+    @JsonIgnore
+    private Set<Vote> votes;
+
 
     public Role() {
 

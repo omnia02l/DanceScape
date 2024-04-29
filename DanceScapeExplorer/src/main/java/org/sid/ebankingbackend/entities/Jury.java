@@ -21,7 +21,5 @@ public class Jury implements Serializable {
     private Long idJury ;
     private String name ;
     private String email ;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="jury")
-    @JsonIgnore
-    private Vote vote;
+
 }

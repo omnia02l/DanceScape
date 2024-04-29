@@ -6,7 +6,6 @@ import org.sid.ebankingbackend.payload.request.UpdateTrainingRequest;
 import org.sid.ebankingbackend.payload.response.TrainingResponse;
 import org.sid.ebankingbackend.payload.response.UpdateTrainingDatesRequest;
 
-import java.time.Instant;
 import java.util.List;
 
 public interface TrainingService {
