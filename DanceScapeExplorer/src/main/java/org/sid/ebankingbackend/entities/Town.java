@@ -1,6 +1,9 @@
 package org.sid.ebankingbackend.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -10,6 +13,8 @@ import java.util.Set;
 //@Table(name = "Town")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Town implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +23,9 @@ public class Town implements Serializable {
     private String country;
     private Long population;
     private String landmarks;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "town")
-    private Set<Competition> competitions;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "town")
+    @JsonIgnore
     private Set<Venue> venues;
 
 }

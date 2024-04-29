@@ -13,8 +13,8 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@Table( name = "Price")
-public class Price  implements Serializable {
+@Table( name = "Price")
+public class Price  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idPrice")
@@ -22,6 +22,14 @@ public class Price  implements Serializable {
     private float price;
 
     @Enumerated(EnumType.STRING)
-    private TrancheAge age;
+    private TrancheAge trancheAge;
+
+    @Enumerated(EnumType.STRING)
+    private TypeTicket typeTicket;
+
+
+
+
+
 
 }

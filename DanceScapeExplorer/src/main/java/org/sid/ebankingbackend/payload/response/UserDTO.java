@@ -9,6 +9,7 @@ import org.sid.ebankingbackend.models.User;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
+    private Long id;
     private String userName;
     private String firsName;
     private String lastName;
@@ -18,6 +19,7 @@ public class UserDTO {
     private Boolean status;
 
     public UserDTO(User user) {
+        this.id = user.getId();
         this.userName = user.getUsername();
         this.firsName = user.getFirstName();
         this.lastName = user.getLastName();
