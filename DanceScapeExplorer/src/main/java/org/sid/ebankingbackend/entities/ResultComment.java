@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.sid.ebankingbackend.models.User;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -25,5 +28,9 @@ public class ResultComment implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     Result result ;
+
+    @ManyToOne
+    @JsonIgnore
+    private User user ;
 
 }
