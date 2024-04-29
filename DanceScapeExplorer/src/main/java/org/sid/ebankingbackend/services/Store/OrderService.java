@@ -2,9 +2,13 @@ package org.sid.ebankingbackend.services.Store;
 
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.sid.ebankingbackend.DTO.OrderDTO;
+import org.sid.ebankingbackend.DTO.ResponseOrderDTO;
 import org.sid.ebankingbackend.entities.Orders;
 import org.sid.ebankingbackend.entities.Product;
 import org.sid.ebankingbackend.entities.ShoppingCart;
+import org.sid.ebankingbackend.models.User;
 import org.sid.ebankingbackend.repository.OrderRepo;
 import org.sid.ebankingbackend.repository.ProductRepo;
 import org.sid.ebankingbackend.repository.UserRepository;
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class OrderService {
 
     private OrderRepo orderRepository;
@@ -72,15 +77,18 @@ public class OrderService {
         }
         return totalCartAmount;
     }
-
+//float calculerDistanceLivreurAEsprit(float latt,float longi){
+//    float dist=sqrt((latt-36.899566)²+(longi-10.189212)²)
+//        return 0;
+//}
 
     public Orders saveOrder(Orders order) {
-        float totalAmount = getCartAmount(order.getCartItems());
-        order.setTotalAmount(totalAmount);
+       // float totalAmount = getCartAmount(order.getCartItems());
+     //   order.setTotalAmount(totalAmount);
         order.setDateCreation(new Date());
         return orderRepository.save(order);
     }
-    /*    public ResponseOrderDTO saveOrder(OrderDTO orderDTO) {
+     /* public ResponseOrderDTO saveOrder(OrderDTO orderDTO) {
         User customer = customerRepository.findByEmail(orderDTO.getCustomerEmail());
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found with email: " + orderDTO.getCustomerEmail());
@@ -106,19 +114,26 @@ public class OrderService {
 
 
     public void updateProductSales(List<ShoppingCart> cartItems) {
+        final  int quantitySold;
+        int availableQuantity;
+        long productId=0;
         for (ShoppingCart cart : cartItems) {
-            Long productId = cart.getProductId();
-            int quantitySold = cart.getQuantity();
-            Optional<Product> productOptional = productRepository.findById(productId);
-            productOptional.ifPresent(product -> {
-                int availableQuantity = product.getQuantity() - quantitySold;
-                product.setQuantity(availableQuantity);
-                product.setTotalSalesQuantity(product.getTotalSalesQuantity() + quantitySold);
-                product.setTotalRevenue(product.getTotalRevenue() + (product.getPrice() * quantitySold));
+             productId = cart.getProductId();
+            // quantitySold = cart.getQuantity();
+            Product product = productRepository.findById(productId).orElse(null);
+
+              //  availableQuantity = product.getQuantity() - cart.getQuantity();
+                log.info("quantity is: "+product.getQuantity());
+                //product.setQuantity(product.getQuantity() - cart.getQuantity());
+                log.info("quantity is: "+product.getQuantity());
+                product.setTotalSalesQuantity(product.getTotalSalesQuantity() + cart.getQuantity());
+                product.setTotalRevenue(product.getTotalRevenue() + (product.getPrice() * cart.getQuantity()));
                 product.setLastSoldDate(new Date());
                 productRepository.save(product);
-            });
-        }
+                log.info("quantity is: "+product.getQuantity());
+            }
+
+
     }
     /**/ public List<Orders> findOrdersBetweenDates(Date startDate, Date endDate) {
         return orderRepository.findByDateCreationBetween(startDate, endDate);

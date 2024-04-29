@@ -77,8 +77,8 @@ public class ShoppingCartRestController {
         try {
             order = orderService.saveOrder(order);
             logger.info("Order processed successfully");
-            orderService.updateProductSales(orderDTO.getCartItems());
-            orderService.populateOrderProducts(order, orderDTO.getCartItems());
+         orderService.updateProductSales(orderDTO.getCartItems());
+         orderService.populateOrderProducts(order, orderDTO.getCartItems());
 
         } catch (Exception e) {
             logger.error("Failed to process order: {}", e.getMessage());

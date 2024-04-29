@@ -6,16 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
-
+@Repository
 public interface ProductRepo extends JpaRepository<Product , Long> {
-    @Modifying
-    @Transactional
-    @Query("update Product p set p.quantity = p.quantity - ?2 where p.productId = ?1 and p.quantity >= ?2")
-    int updateProductQuantity(Long productId, int quantitySold);
+//    @Modifying
+//    @Transactional
+//    @Query("update Product p set p.quantity = p.quantity - ?2 where p.productId = ?1 and p.quantity >= ?2")
+//    int updateProductQuantity(Long productId, int quantitySold);
     @Modifying
     @Transactional
     @Query("update Product p set p.totalSalesQuantity = p.totalSalesQuantity + ?2, p.totalRevenue = p.totalRevenue + ?3, p.lastSoldDate = ?4 where p.productId = ?1")
