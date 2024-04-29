@@ -1,11 +1,14 @@
 package org.sid.ebankingbackend.controllers.Tickets;
 
 import lombok.AllArgsConstructor;
+import org.sid.ebankingbackend.entities.PlaceStatistics;
 import org.sid.ebankingbackend.entities.Places;
 import org.sid.ebankingbackend.entities.RowLabel;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
 import org.sid.ebankingbackend.services.Tickets.PlacesServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,5 +75,12 @@ public class PlacesController {
     @PutMapping("/togglePlaceSelection/{id}")
     public Places togglePlaceSelection(@PathVariable Long id) {
         return placesService.togglePlaceSelection(id);
+    }
+
+
+    @GetMapping("/statistics/{venuePlanId}")
+    public ResponseEntity<PlaceStatistics> getPlaceStatistics(@PathVariable Long venuePlanId) {
+        PlaceStatistics statistics = placesService.getPlaceStatistics(venuePlanId);
+        return new ResponseEntity<>(statistics, HttpStatus.OK);
     }
 }

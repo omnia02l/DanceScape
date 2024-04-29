@@ -29,7 +29,9 @@ public class QRCodeGenerator {
                 "\"refTicket\":\"" + ticket.getRefTicket() + "\"," +
                 "\"expireDate\":\"" + ticket.getExpireDate() + "\"," +
                 "\"typeTicket\":\"" + ticket.getTypeTicket() + "\"," +
-                "\"scanned\":\"" + ticket.isScanned() + "\"" +
+                "\"competitions\":\"" + ticket.getPlaces().getVenuePlan().getVenue().getCompetitions()+ "\"" +
+                "\"row Label\":\"" + ticket.getPlaces().getRowLabel()+ "\"" +
+                "\"seat\":\"" + ticket.getPlaces().getSeatNumber()+ "\"" +
                 "}";
 
         BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, 350, 350);

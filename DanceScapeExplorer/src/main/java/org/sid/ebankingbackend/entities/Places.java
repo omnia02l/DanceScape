@@ -23,7 +23,7 @@ public class Places {
     private Long seatNumber; // Changé en String pour des numéros de sièges comme "1", "A1", etc.
     @Enumerated(EnumType.STRING)
     private RowLabel rowLabel;
-
+    private int bookingCount;
     private  boolean isOccupied;
     private  boolean isSelected;
     private Long userid;

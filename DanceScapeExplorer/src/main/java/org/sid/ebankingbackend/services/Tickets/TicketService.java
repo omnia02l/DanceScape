@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.models.User;
+import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
 import org.sid.ebankingbackend.repository.Tickets.PriceRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketCardRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketRepository;
@@ -55,6 +56,11 @@ public class TicketService implements ITicketService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    PlacesRepository placesRepository;
+
+
     private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
 
 
@@ -85,6 +91,12 @@ public class TicketService implements ITicketService {
 
     @Transactional
     public Ticket generateTicket(Long userid,Places place) {
+
+        Places places = placesRepository.findById(place.getIdPlace()).orElseThrow(() -> new RuntimeException("Place not found"));
+        place.setBookingCount(place.getBookingCount() + 1);
+        placesRepository.save(place);
+
+
         Ticket newTicket = new Ticket();
 
         // Définir la référence unique du ticket

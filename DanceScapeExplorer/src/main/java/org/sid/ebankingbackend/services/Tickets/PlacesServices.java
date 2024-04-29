@@ -4,10 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
-import org.sid.ebankingbackend.entities.Places;
-import org.sid.ebankingbackend.entities.RowLabel;
-import org.sid.ebankingbackend.entities.Ticket;
-import org.sid.ebankingbackend.entities.VenuePlan;
+import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketRepository;
 import org.sid.ebankingbackend.repository.Tickets.VenuePlanRepository;
@@ -162,6 +159,31 @@ public class PlacesServices implements IPlacesServices {
         }
 
         return seatNumbersByRow;
+    }
+
+    public PlaceStatistics getPlaceStatistics(Long venuePlanId) {
+        List<Places> allPlaces = placesRepository.findByVenuePlan_IdPlan(venuePlanId);
+
+        // Les listes pour classer les places
+        List<Places> neverBooked = new ArrayList<>();
+        List<Places> bookedOnce = new ArrayList<>();
+        List<Places> bookedMoreThanOnce = new ArrayList<>();
+
+        for (Places place : allPlaces) {
+            switch (place.getBookingCount()) {
+                case 0:
+                    neverBooked.add(place);
+                    break;
+                case 1:
+                    bookedOnce.add(place);
+                    break;
+                default:
+                    bookedMoreThanOnce.add(place);
+                    break;
+            }
+        }
+
+        return new PlaceStatistics(neverBooked, bookedOnce, bookedMoreThanOnce);
     }
 
 }
