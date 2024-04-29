@@ -22,4 +22,7 @@ public interface ICompetitionservice {
     void removeCompetition(Long idcomp);
     Competition addCompetition(Competition c, Long categoryId, Long styleId,Long venueId);
     GenderstatDTO getGenderStatsForCompetition(Long competitionId);
+    Map<String, Long> getCompetitionCountByDanceStyle();
+    Map<String, Long> getNumberOfParticipantsPerCompetition();
+
 }

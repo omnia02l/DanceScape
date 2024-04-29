@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -94,6 +96,30 @@ public class Competitionservice implements ICompetitionservice {
         GenderstatDTO genderStats = new GenderstatDTO(totalMaleDancers, totalFemaleDancers);
 
         return genderStats;
+    }
+    @Override
+    public Map<String, Long> getNumberOfParticipantsPerCompetition() {
+        Map<String, Long> participantsPerCompetition = new HashMap<>();
+
+        List<Competition> competitions = comprepo.findAll();
+
+        for (Competition competition : competitions) {
+            long totalParticipants = competition.getTeams().stream()
+                    .flatMap(team -> team.getDancers().stream())
+                    .count();
+
+            participantsPerCompetition.put(competition.getCompname(), totalParticipants);
+        }
+
+        return participantsPerCompetition;
+    }
+    @Override
+    public Map<String, Long> getCompetitionCountByDanceStyle() {
+        return comprepo.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        competition -> competition.getStyle(),
+                        Collectors.counting()
+                ));
     }
 
 

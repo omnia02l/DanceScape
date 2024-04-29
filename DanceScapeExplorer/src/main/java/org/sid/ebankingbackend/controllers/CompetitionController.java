@@ -70,6 +70,15 @@ public class CompetitionController {
         return compserv.getGenderStatsForCompetition(competitionId);
     }
 
+    @GetMapping("/statcountByDanceStyle")
+    public Map<String, Long> getCompetitionCountByDanceStyle() {
+        return compserv.getCompetitionCountByDanceStyle();
+    }
+    @GetMapping("/statparticipants")
+    public Map<String, Long> getNumberOfParticipantsPerCompetition() {
+        return compserv.getNumberOfParticipantsPerCompetition();
+    }
+
     @GetMapping("/venue-plan-id/{id}")
     public Long getVenuePlanIdByCompetitionId(@PathVariable("id") Long competitionId) {
         return competitionservice.getVenuePlanIdByCompetitionId(competitionId);
