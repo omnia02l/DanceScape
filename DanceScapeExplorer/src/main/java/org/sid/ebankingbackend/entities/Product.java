@@ -29,7 +29,11 @@ public class Product {
     private String status;
     private Float discountPercentage;
     private Float discountPrice;
-    private String image;
+   // private String image;
+  /*  @Lob
+   private byte[] imageData;*/
+   @OneToOne
+   private ImageStore imagestore;
     private int totalSalesQuantity;
     private double totalRevenue;
     @Temporal(TemporalType.TIMESTAMP)

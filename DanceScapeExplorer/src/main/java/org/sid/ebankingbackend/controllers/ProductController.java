@@ -7,13 +7,17 @@ import org.sid.ebankingbackend.entities.Category;
 import org.sid.ebankingbackend.entities.Product;
 import org.sid.ebankingbackend.services.Store.ICategoryService;
 import org.sid.ebankingbackend.services.Store.IProductService;
+import org.sid.ebankingbackend.services.Store.ServiceFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +32,8 @@ public class ProductController {
     private IProductService productService;
     @Autowired
     private ICategoryService categoryService;
-
+@Autowired
+private ServiceFile serviceFile;
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
         Product product = productService.getProductById(productId);
@@ -45,11 +50,11 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @PostMapping("/add-Product")
+ /*   @PostMapping("/add-Product")
     public Product addProducts(@RequestBody Product product) {
         return productService.AddProduct(product);
         //return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+    }*/
 
     @PutMapping("/update/{productId}")
     public ResponseEntity<Void> updateProduct(@PathVariable Long productId, @RequestBody Product product) {
@@ -79,6 +84,43 @@ public class ProductController {
         Product savedProduct = productService.AddProduct(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
+  /* @PostMapping("/add")
+   public ResponseEntity<Product> addProduct(@RequestParam("image") MultipartFile file,
+                                             @RequestBody Product product,
+                                             @RequestParam Long categoryId) {
+       // Check if the category exists
+       Category category = categoryService.getCategoryById(categoryId);
+       if (category == null) {
+           return ResponseEntity.notFound().build();
+       }
+
+       // Set the category for the product
+       product.setCategory(category);
+
+       // Save the image data to the product
+       try {
+           if (file != null) {
+               String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+               serviceFile.saveFile(file, fileName);
+               // Optionally, you can set the file path or URL in the product entity
+               // product.setImagePath("path/to/uploaded/file/" + fileName);
+           }
+       } catch (IOException e) {
+           // Handle file storage exception
+           e.printStackTrace();
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+       }
+
+       // Save the product
+       Product savedProduct = productService.AddProduct(product);
+       if (savedProduct != null) {
+           return ResponseEntity.ok(savedProduct);
+       } else {
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+       }
+   }
+*/
+
 
     @GetMapping("/top5sale/{categoryId}")
     public ResponseEntity<List<Product>> getTop5SaleProductsByCategory(@PathVariable Long categoryId) {
@@ -103,17 +145,24 @@ public class ProductController {
 
         return productService.findTopSellingProductsForWeek(sqlWeekStartDate, sqlWeekEndDate);
     }
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
-        // Check if file is empty
+   /* @PostMapping("/upload")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Please upload an image");
+            // Handle empty file upload
+            return "redirect:/error";
         }
 
-        // You can add logic here to save the file to your desired location
-        // For simplicity, let's just return the filename
-        String filename = file.getOriginalFilename();
-        return ResponseEntity.ok().body(filename);
-    }
+        try {
+            // Save the file to the desired location
+            // Here, you can replace "/path/to/save/file" with your desired file path
+            String filePath = "/path/to/save/file/" + file.getOriginalFilename();
+            file.transferTo(new File(filePath));
 
+            // File uploaded successfully, redirect to success page
+            return "redirect:/success";
+        } catch (IOException e) {
+            // Handle file upload exception
+            return "redirect:/error";
+        }
+    }*/
 }

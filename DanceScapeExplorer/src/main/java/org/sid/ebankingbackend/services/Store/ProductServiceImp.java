@@ -3,12 +3,17 @@ package org.sid.ebankingbackend.services.Store;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.sid.ebankingbackend.entities.ImageStore;
 import org.sid.ebankingbackend.entities.Product;
+import org.sid.ebankingbackend.repository.ImageStoreRepo;
 import org.sid.ebankingbackend.repository.ProductRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -16,7 +21,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImp implements IProductService {
     private ProductRepo productRepo;
-
+    private final CloudinaryService cloudinaryService;
+    private final ImageStoreRepo imageStoreRepo;
     @Override
     public Product getProductById(Long productId) {
         Optional<Product> productOptional = productRepo.findById(productId);
@@ -29,7 +35,7 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public Product AddProduct(Product product) {
+   public Product AddProduct(Product product) {
         try {
             return productRepo.save(product);
         } catch (Exception e) {
@@ -38,6 +44,23 @@ public class ProductServiceImp implements IProductService {
             throw new RuntimeException("Failed to add product: " + e.getMessage());
         }
     }
+    public Product addProduct(Product product, MultipartFile imageFile) {
+        try {
+            Map uploadResult = cloudinaryService.upload(imageFile);
+            ImageStore imageStore = new ImageStore();
+            imageStore.setName(imageFile.getOriginalFilename());
+            imageStore.setImageUrl(uploadResult.get("url").toString());
+            imageStore.setImageId(uploadResult.get("public_id").toString());
+            imageStoreRepo.save(imageStore);
+
+            product.setImagestore(imageStore);
+            return productRepo.save(product);
+        } catch (IOException e) {
+            // Log the exception or handle it accordingly
+            throw new RuntimeException("Failed to upload image and add product: " + e.getMessage(), e);
+        }
+
+}
 
     @Override
     public void deleteProduct(Long productId) {
