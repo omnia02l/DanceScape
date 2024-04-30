@@ -44,7 +44,7 @@ public class ProductServiceImp implements IProductService {
             throw new RuntimeException("Failed to add product: " + e.getMessage());
         }
     }
-    public Product addProduct(Product product, MultipartFile imageFile) {
+  /*  public Product addProduct(Product product, MultipartFile imageFile) {
         try {
             Map uploadResult = cloudinaryService.upload(imageFile);
             ImageStore imageStore = new ImageStore();
@@ -60,7 +60,7 @@ public class ProductServiceImp implements IProductService {
             throw new RuntimeException("Failed to upload image and add product: " + e.getMessage(), e);
         }
 
-}
+}*/
 
     @Override
     public void deleteProduct(Long productId) {

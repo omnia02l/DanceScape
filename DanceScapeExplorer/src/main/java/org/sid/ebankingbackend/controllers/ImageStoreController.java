@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/cloudinary")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ImageStoreController {
-    @Autowired
+  /*  @Autowired
     CloudinaryService cloudinaryService;
 
     @Autowired
@@ -63,5 +63,5 @@ public class ImageStoreController {
         imageService.delete(id);
         return new ResponseEntity<>("image supprimée !", HttpStatus.OK);
     }
-
+*/
 }
