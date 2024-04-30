@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query (value = "select count(*) from users where disabled=?1", nativeQuery = true)
     Long getStatusNumber(int status);
+    public User findByEmailAndUsername(String email, String username);
+
 }

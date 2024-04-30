@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -22,6 +23,12 @@ public class Delivery implements Serializable {
     @Enumerated(EnumType.STRING)
     private ShippingType shippingType;
     private String trackingNumber;
+    @Temporal(TemporalType.DATE)
+
+    private Date deliveryDate;
+    private String estimatedDeliveryTime;
+    private String deliveryNotes;
+
     @OneToOne(mappedBy="delivery")
     @JsonIgnore
     private Orders order;
