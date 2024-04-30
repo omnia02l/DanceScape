@@ -1,4 +1,4 @@
-package org.sid.ebankingbackend.models;
+package org.sid.ebankingbackend.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,29 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Event {
+public class CoachStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Date eventDate;
-
-    private String eventName;
-
-    private String eventDescription;
-
-    private String eventAddress;
-
-    private int rate = 0;
-
-    private int rateX =0;
-
-    private int rateNumber = 0;
+    private String username;
+    private Boolean status = true;
 }

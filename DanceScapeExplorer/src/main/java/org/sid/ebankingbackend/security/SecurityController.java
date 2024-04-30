@@ -1,8 +1,8 @@
 package org.sid.ebankingbackend.security;
 
-
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.sid.ebankingbackend.entities.CoachStatus;
 import org.sid.ebankingbackend.error.BadRequestException;
 import org.sid.ebankingbackend.models.ConfirmationKey;
 import org.sid.ebankingbackend.models.ERole;
@@ -10,11 +10,14 @@ import org.sid.ebankingbackend.models.Role;
 import org.sid.ebankingbackend.models.User;
 import org.sid.ebankingbackend.payload.request.SignupRequest;
 import org.sid.ebankingbackend.payload.response.MessageResponse;
+import org.sid.ebankingbackend.repository.CoachStatusRepo;
 import org.sid.ebankingbackend.repository.ConfirmationKeyRepo;
 import org.sid.ebankingbackend.repository.RoleRepository;
 import org.sid.ebankingbackend.repository.UserRepository;
+import org.sid.ebankingbackend.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,7 +44,8 @@ import java.util.stream.Collectors;
 public class SecurityController {
     /////autheeentication
 
-
+    @Autowired
+    EmailService emailService;
     @Autowired
     UserRepository userRepository;
 
@@ -53,6 +57,8 @@ public class SecurityController {
     private JwtEncoder jwtEncoder;
     @Autowired
     private ConfirmationKeyRepo confirmationKeyRepo;
+    @Autowired
+    private CoachStatusRepo coachStatusRepo;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -85,17 +91,25 @@ public class SecurityController {
         if (confirmationKeyRepo.existsByEmailAddress(emailAddress)) {
             throw new BadRequestException("We have already sent an email to reset your password");
         }
-        return this.generateAndPersistConfirmationKey(emailAddress);
+        final var key = UUID.randomUUID().toString();
+        SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+        simpleMailMessage.setTo(emailAddress);
+        simpleMailMessage.setSubject("Password reset");
+        simpleMailMessage.setFrom("clasherwin59@gmail.com");
+        simpleMailMessage.setText("To change your password add this confirmation Key : " +key);
+        emailService.send(simpleMailMessage);
+        return this.generateAndPersistConfirmationKey(emailAddress, key);
     }
 
-    private String generateAndPersistConfirmationKey(String emailAddress) {
+    private String generateAndPersistConfirmationKey(String emailAddress, String key) {
         User user = this.userRepository.findByEmail(emailAddress).get();
         ConfirmationKey confirmationKey = new ConfirmationKey();
         confirmationKey.setEmailAddress(emailAddress);
-        confirmationKey.setConfirmationKey(UUID.randomUUID().toString());
+        confirmationKey.setConfirmationKey(key);
         this.confirmationKeyRepo.save(confirmationKey);
         return "We have sent an email to reset your password";
     }
+
 
 
     @GetMapping("/profile")
@@ -127,6 +141,7 @@ public class SecurityController {
                         jwtClaimsSet
                 );
         String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
+        //return Map.of("accessToken", jwt);
         return Map.of("accessToken", jwt, "role", scope);
 
 
@@ -177,12 +192,6 @@ public class SecurityController {
                         roles.add(modRole);
 
                         break;
-                    case "coach":
-                        Role coachRole = roleRepository.findByName(ERole.coach)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(coachRole);
-
-                        break;
                     case "dancer":
                         Role dancerRole = roleRepository.findByName(ERole.dancer)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -193,6 +202,15 @@ public class SecurityController {
                         Role schoolRole = roleRepository.findByName(ERole.school)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(schoolRole);
+
+                        break;
+                    case "coach":
+                        Role coachRole = roleRepository.findByName(ERole.coach)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        CoachStatus coachStatus = new CoachStatus();
+                        coachStatus.setUsername(user.getUsername());
+                        this.coachStatusRepo.save(coachStatus);
+                        roles.add(coachRole);
 
                         break;
                     default:
@@ -209,3 +227,4 @@ public class SecurityController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }
+
