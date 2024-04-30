@@ -4,6 +4,7 @@ package org.sid.ebankingbackend.repository;
 
 import org.sid.ebankingbackend.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -18,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByEmail(String email);
     Optional<User> findByDiscount(String discountCode);
+
+    @Query (value = "select count(*) from users where disabled=?1", nativeQuery = true)
+    Long getStatusNumber(int status);
 }
