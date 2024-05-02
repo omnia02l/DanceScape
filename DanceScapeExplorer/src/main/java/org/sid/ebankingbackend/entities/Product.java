@@ -29,10 +29,7 @@ public class Product {
     private String status;
     private Float discountPercentage;
     private Float discountPrice;
-   // private String image;
-  /*  @Lob
-   private byte[] imageData;*/
-   @OneToOne
+      @OneToOne(cascade = CascadeType.ALL)
    private ImageStore imagestore;
     private int totalSalesQuantity;
     private double totalRevenue;

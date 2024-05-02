@@ -1,6 +1,7 @@
 package org.sid.ebankingbackend.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class ImageStore {
     private String imageUrl;
     private String imageId;
     @OneToOne(mappedBy="imagestore")
+    @JsonIgnore
     private Product product;
     public ImageStore(String name, String imageUrl, String imageId) {
         this.name = name;

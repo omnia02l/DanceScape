@@ -4,7 +4,9 @@ package org.sid.ebankingbackend.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.sid.ebankingbackend.entities.Category;
+import org.sid.ebankingbackend.entities.ImageStore;
 import org.sid.ebankingbackend.entities.Product;
+import org.sid.ebankingbackend.services.Store.CloudinaryService;
 import org.sid.ebankingbackend.services.Store.ICategoryService;
 import org.sid.ebankingbackend.services.Store.IProductService;
 import org.sid.ebankingbackend.services.Store.ServiceFile;
@@ -21,6 +23,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+
 @Component
 @Aspect
 @Slf4j
@@ -32,8 +36,9 @@ public class ProductController {
     private IProductService productService;
     @Autowired
     private ICategoryService categoryService;
-@Autowired
-private ServiceFile serviceFile;
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
         Product product = productService.getProductById(productId);
@@ -73,6 +78,7 @@ private ServiceFile serviceFile;
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PostMapping("/add")
     public ResponseEntity<Product> addProduct(@RequestBody Product product, @RequestParam Long categoryId) {
         Category category = categoryService.getCategoryById(categoryId);
@@ -145,24 +151,57 @@ private ServiceFile serviceFile;
 
         return productService.findTopSellingProductsForWeek(sqlWeekStartDate, sqlWeekEndDate);
     }
-   /* @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            // Handle empty file upload
-            return "redirect:/error";
+
+    /* @PostMapping("/upload")
+     public String handleFileUpload(@RequestParam("file") MultipartFile file) {
+         if (file.isEmpty()) {
+             // Handle empty file upload
+             return "redirect:/error";
+         }
+
+         try {
+             // Save the file to the desired location
+             // Here, you can replace "/path/to/save/file" with your desired file path
+             String filePath = "/path/to/save/file/" + file.getOriginalFilename();
+             file.transferTo(new File(filePath));
+
+             // File uploaded successfully, redirect to success page
+             return "redirect:/success";
+         } catch (IOException e) {
+             // Handle file upload exception
+             return "redirect:/error";
+         }
+     }*/
+    @PostMapping("/{productId}/assign-image")
+    public ResponseEntity<String> assignImageToProduct(@PathVariable Long productId, @RequestParam MultipartFile imageFile) {
+        // Retrieve the product by ID
+        Product product = productService.getProductById(productId);
+        if (product == null) {
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
 
         try {
-            // Save the file to the desired location
-            // Here, you can replace "/path/to/save/file" with your desired file path
-            String filePath = "/path/to/save/file/" + file.getOriginalFilename();
-            file.transferTo(new File(filePath));
+            // Upload the image to Cloudinary
+            Map uploadResult = cloudinaryService.upload(imageFile);
 
-            // File uploaded successfully, redirect to success page
-            return "redirect:/success";
+            // Create ImageStore entity
+            ImageStore imageStore = new ImageStore();
+            imageStore.setName(imageFile.getOriginalFilename());
+            imageStore.setImageUrl(uploadResult.get("url").toString());
+            imageStore.setImageId(uploadResult.get("public_id").toString());
+
+            // Assign image to product
+            product.setImagestore(imageStore);
+
+            // Save product with assigned image
+            productService.AddProduct(product);
+
+            return new ResponseEntity<>("Image assigned to product successfully", HttpStatus.OK);
         } catch (IOException e) {
-            // Handle file upload exception
-            return "redirect:/error";
+            // Handle file upload or image assignment error
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to assign image to product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }*/
+    }
+
 }

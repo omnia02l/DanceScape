@@ -1,8 +1,8 @@
 package org.sid.ebankingbackend.services.Store;
 
 
-
-
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Service
 public class CloudinaryService {
- /*   Cloudinary cloudinary;
+    Cloudinary cloudinary;
 
     public CloudinaryService() {
         Map<String, String> valuesMap = new HashMap<>();
@@ -47,5 +47,5 @@ public class CloudinaryService {
         fo.close();
         return file;
     }
-*/
+
 }

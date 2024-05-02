@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+/*
 @RestController
 @RequestMapping("/api/images")
 public class ImageController {
@@ -33,5 +33,4 @@ public class ImageController {
             e.printStackTrace();
             return "Failed to upload file.";
         }
-    }
-}
+    }*/

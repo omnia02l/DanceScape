@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/cloudinary")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ImageStoreController {
-  /*  @Autowired
+    @Autowired
     CloudinaryService cloudinaryService;
 
     @Autowired
@@ -32,9 +32,11 @@ public class ImageStoreController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @PostMapping("/upload")
+   @PostMapping("/upload/{id}")
+  //  @PostMapping("/upload")
+
     @ResponseBody
-    public ResponseEntity<String> upload(@RequestParam MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<String> upload(@RequestParam MultipartFile multipartFile,@PathVariable("id") Long id) throws IOException {
         BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
         if (bi == null) {
             return new ResponseEntity<>("Image non valide!", HttpStatus.BAD_REQUEST);
@@ -43,7 +45,7 @@ public class ImageStoreController {
         ImageStore image = new ImageStore((String) result.get("original_filename"),
                 (String) result.get("url"),
                 (String) result.get("public_id"));
-        imageService.save(image);
+        imageService.save(image,id);
         return new ResponseEntity<>("image ajoutée avec succès ! ", HttpStatus.OK);
     }
 
@@ -63,5 +65,5 @@ public class ImageStoreController {
         imageService.delete(id);
         return new ResponseEntity<>("image supprimée !", HttpStatus.OK);
     }
-*/
+
 }

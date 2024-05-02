@@ -21,7 +21,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductServiceImp implements IProductService {
     private ProductRepo productRepo;
-    private final CloudinaryService cloudinaryService;
+//    private final CloudinaryService cloudinaryService;
     private final ImageStoreRepo imageStoreRepo;
     @Override
     public Product getProductById(Long productId) {
