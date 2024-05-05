@@ -1,5 +1,6 @@
 package org.sid.ebankingbackend.controllers;
 
+import org.sid.ebankingbackend.models.AccountStatusStats;
 import org.sid.ebankingbackend.payload.request.EditProfileRequest;
 import org.sid.ebankingbackend.payload.request.UpdatePasswordRequest;
 import org.sid.ebankingbackend.payload.response.UserDTO;
@@ -21,6 +22,15 @@ public class AccountController {
         return this.accountService.listAccounts().stream().map(UserDTO::new).toList();
     }
 
+    @PostMapping("/ban-account")
+    private void banAccounts(@RequestParam String userName) {
+        this.accountService.banAccount(userName);
+    }
+
+    @PostMapping("/enable-account")
+    private void enableAccounts(@RequestParam String userName) {
+        this.accountService.enableAccount(userName);
+    }
 
     @GetMapping("/profile")
     private UserDTO getPrincipal(Principal principal){
@@ -29,11 +39,16 @@ public class AccountController {
 
     @PostMapping("/edit-profile")
     private String editProfile(Principal principal, @RequestBody EditProfileRequest editProfileRequest) {
-       return this.accountService.editProfile(principal.getName(), editProfileRequest);
+        return this.accountService.editProfile(principal.getName(), editProfileRequest);
     }
 
     @PostMapping("/update-password")
     private String updatePassword(Principal principal, @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         return this.accountService.updatePassword(principal.getName(), updatePasswordRequest);
+    }
+
+    @GetMapping("/get-status-stats")
+    private AccountStatusStats getStatusStats(){
+        return this.accountService.getAccountStatusStats();
     }
 }

@@ -1,6 +1,7 @@
 package org.sid.ebankingbackend.services;
 
 import org.sid.ebankingbackend.error.BadRequestException;
+import org.sid.ebankingbackend.models.AccountStatusStats;
 import org.sid.ebankingbackend.models.User;
 import org.sid.ebankingbackend.payload.request.EditProfileRequest;
 import org.sid.ebankingbackend.payload.request.UpdatePasswordRequest;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.beans.Encoder;
 import java.util.List;
 
 @Service
@@ -24,6 +24,19 @@ public class AccountServiceImpl implements AccountService {
         return this.userRepository.findAll();
     }
 
+    @Override
+    public void banAccount(String userName) {
+        User user = this.userRepository.findByUsername(userName).get();
+        user.setDisabled(true);
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void enableAccount(String userName) {
+        User user = this.userRepository.findByUsername(userName).get();
+        user.setDisabled(false);
+        this.userRepository.save(user);
+    }
 
     @Override
     public User getPrincipal(String userName) {
@@ -55,5 +68,11 @@ public class AccountServiceImpl implements AccountService {
     private void checkIfEmailAddressExist(String emailAddress) {
         if (this.userRepository.existsByEmail(emailAddress))
             throw new BadRequestException("Email address already in use");
+    }
+
+    @Override
+    public AccountStatusStats getAccountStatusStats() {
+        return new AccountStatusStats(this.userRepository.getStatusNumber(0),
+                this.userRepository.getStatusNumber(1));
     }
 }
