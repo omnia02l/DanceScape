@@ -1,7 +1,6 @@
 package org.sid.ebankingbackend.controllers;
 
-import org.sid.ebankingbackend.entities.DanceHall;
-import org.sid.ebankingbackend.entities.Training;
+import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.payload.request.UpdateTrainingRequest;
 import org.sid.ebankingbackend.payload.response.TrainingResponse;
 import org.sid.ebankingbackend.payload.response.UpdateTrainingDatesRequest;
@@ -93,5 +92,31 @@ public class TrainingController {
     @PostMapping("/update-training")
     private String updateTraining(@RequestParam Long id, @RequestBody UpdateTrainingRequest updateTrainingRequest){
         return this.trainingService.updateTraining(id,updateTrainingRequest);
+    }
+
+    @GetMapping("/stats")
+    private Stats getStats() {
+        return this.trainingService.getStats();
+    }
+
+
+    @GetMapping("/list-all-coach")
+    private List<CoachStatus> listAllCoach(){
+        return this.trainingService.listAllCoach();
+    }
+
+    @PostMapping("/change-coach-status")
+    private String changeCoachStatus(@RequestParam Long id){
+        return this.trainingService.changeCoachStatus(id);
+    }
+
+    @GetMapping("/list-training-with-category/{category}")
+    private List<Training> listTrainingWithCategory(@PathVariable(value = "category") String c){
+        return this.trainingService.listTrainingWithCategory(c);
+    }
+
+    @GetMapping("/stats-with-cat")
+    private TrainingStatsWithCat getStatsWithCat(){
+        return this.trainingService.getTrainingStatsWithCat();
     }
 }

@@ -27,4 +27,10 @@ public class Event {
     private String eventDescription;
 
     private String eventAddress;
+
+    private int rate = 0;
+
+    private int rateX =0;
+
+    private int rateNumber = 0;
 }

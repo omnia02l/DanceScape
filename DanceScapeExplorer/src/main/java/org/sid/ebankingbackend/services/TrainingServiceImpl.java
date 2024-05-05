@@ -1,20 +1,13 @@
 package org.sid.ebankingbackend.services;
 
 import jakarta.transaction.Transactional;
-import org.sid.ebankingbackend.entities.DanceHall;
-import org.sid.ebankingbackend.entities.DanceHallStatus;
-import org.sid.ebankingbackend.entities.Training;
-import org.sid.ebankingbackend.entities.TrainingParticipant;
+import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.error.BadRequestException;
-import org.sid.ebankingbackend.models.ERole;
 import org.sid.ebankingbackend.models.User;
 import org.sid.ebankingbackend.payload.request.UpdateTrainingRequest;
 import org.sid.ebankingbackend.payload.response.TrainingResponse;
 import org.sid.ebankingbackend.payload.response.UpdateTrainingDatesRequest;
-import org.sid.ebankingbackend.repository.DanceHallRepo;
-import org.sid.ebankingbackend.repository.TrainingParticipantRepo;
-import org.sid.ebankingbackend.repository.TrainingRepo;
-import org.sid.ebankingbackend.repository.UserRepository;
+import org.sid.ebankingbackend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +25,8 @@ public class TrainingServiceImpl implements TrainingService {
     private TrainingRepo trainingRepo;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CoachStatusRepo coachStatusRepo;
     @Autowired
     private TrainingParticipantRepo trainingParticipantRepo;
 
@@ -68,9 +63,10 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public List<String> listCoaches() {
-        return this.userRepository.findAll()
-                .stream().filter(user -> user.getUserRole().equals(ERole.coach.toString()))
-                .map(User::getUsername)
+        return this.coachStatusRepo.findAll()
+                .stream()
+                .filter(coachStatus -> coachStatus.getStatus().equals(true))
+                .map(CoachStatus::getUsername)
                 .toList();
     }
 
@@ -118,7 +114,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public Boolean ifJoined(Long id, String userName) {
-        return this.trainingParticipantRepo.existsByTrainingIdAndParticipantName(id,userName);
+        return this.trainingParticipantRepo.existsByTrainingIdAndParticipantName(id, userName);
     }
 
     @Transactional
@@ -127,12 +123,12 @@ public class TrainingServiceImpl implements TrainingService {
         User user = this.userRepository.findByUsername(userName).get();
         Training training = this.trainingRepo.findById(id).get();
         DanceHall danceHall = this.danceHallRepo.findByHallName(training.getDanceHallName());
-                if(danceHall.getDanceHallStatus().equals(DanceHallStatus.NOT_AVAILABLE))
-                    throw new BadRequestException("Sorry, the dance hall is not available. We will contact you later");
-        if(Instant.now().isAfter(training.getStart()) || training.getCapacity() == 0)
+        if (danceHall.getDanceHallStatus().equals(DanceHallStatus.NOT_AVAILABLE))
+            throw new BadRequestException("Sorry, the dance hall is not available. We will contact you later");
+        if (Instant.now().isAfter(training.getStart()) || training.getCapacity() == 0)
             throw new BadRequestException("Training already started OR no place available");
         training.setCapacity(training.getCapacity() - 1);
-        if(training.getCapacity() == 0){
+        if (training.getCapacity() == 0) {
             training.setColor("#d8363a");
         }
         this.trainingRepo.save(training);
@@ -149,11 +145,11 @@ public class TrainingServiceImpl implements TrainingService {
     public String cancelTraining(Long id, String userName) {
         Training training = this.trainingRepo.findById(id).get();
         training.setCapacity(training.getCapacity() + 1);
-        if(training.getCapacity()>=1){
+        if (training.getCapacity() >= 1) {
             training.setColor("#007bff");
         }
         this.trainingRepo.save(training);
-        this.trainingParticipantRepo.cancelTraining(id,userName);
+        this.trainingParticipantRepo.cancelTraining(id, userName);
         return "Request accepted";
     }
 
@@ -165,7 +161,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public String updateTraining(Long id,UpdateTrainingRequest updateTrainingRequest) {
+    public String updateTraining(Long id, UpdateTrainingRequest updateTrainingRequest) {
         Training training = this.trainingRepo.findById(id).get();
         training.setTrainingName(updateTrainingRequest.getName());
         training.setDescription(updateTrainingRequest.getDescription());
@@ -179,7 +175,40 @@ public class TrainingServiceImpl implements TrainingService {
                 .getHallAddress();
     }
 
-    private Optional<List<TrainingParticipant>> getTrainingParticipant(Long id){
+    private Optional<List<TrainingParticipant>> getTrainingParticipant(Long id) {
         return this.trainingParticipantRepo.getTrainingParticipants(id);
+    }
+
+    @Override
+    public Stats getStats() {
+        return new Stats(this.trainingRepo.getTotal(), this.trainingRepo.getFull(), this.trainingRepo.getAvailable());
+    }
+
+    @Override
+    public List<CoachStatus> listAllCoach() {
+        return this.coachStatusRepo.findAll();
+    }
+
+    @Override
+    public String changeCoachStatus(Long coachId) {
+        CoachStatus coachStatus = this.coachStatusRepo.findById(coachId).get();
+        coachStatus.setStatus(!coachStatus.getStatus());
+        this.coachStatusRepo.save(coachStatus);
+        return "Availability  changed";
+    }
+
+    @Override
+    public List<Training> listTrainingWithCategory(String category) {
+        return this.trainingRepo.findAll()
+                .stream().filter(training -> training.getTrainingCategory().toString().equals(category))
+                .toList();
+    }
+
+    @Override
+    public TrainingStatsWithCat getTrainingStatsWithCat() {
+        return new TrainingStatsWithCat(this.trainingRepo.getStatsWithCateg("A"),
+                this.trainingRepo.getStatsWithCateg("B"),
+                this.trainingRepo.getStatsWithCateg("C"),
+                this.trainingRepo.getStatsWithCateg("D"));
     }
 }

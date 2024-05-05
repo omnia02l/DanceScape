@@ -1,7 +1,6 @@
 package org.sid.ebankingbackend.services;
 
-import org.sid.ebankingbackend.entities.DanceHall;
-import org.sid.ebankingbackend.entities.Training;
+import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.payload.request.UpdateTrainingRequest;
 import org.sid.ebankingbackend.payload.response.TrainingResponse;
 import org.sid.ebankingbackend.payload.response.UpdateTrainingDatesRequest;
@@ -40,4 +39,14 @@ public interface TrainingService {
     String deleteTraining(Long id);
 
     String updateTraining(Long id,UpdateTrainingRequest updateTrainingRequest);
+
+    Stats getStats();
+
+    List<CoachStatus> listAllCoach();
+
+    String changeCoachStatus(Long coachId);
+
+    List<Training> listTrainingWithCategory(String category);
+
+    TrainingStatsWithCat getTrainingStatsWithCat();
 }
