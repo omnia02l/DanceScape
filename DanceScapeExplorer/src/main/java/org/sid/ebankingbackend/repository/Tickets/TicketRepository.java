@@ -1,6 +1,7 @@
 package org.sid.ebankingbackend.repository.Tickets;
 
 import org.sid.ebankingbackend.entities.Ticket;
+import org.sid.ebankingbackend.services.Tickets.TicketStatisticsDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -61,5 +62,47 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
             "ORDER BY comp.style, month")
     List<Object[]> countTicketsByMonthForAllStyles(@Param("year") int year);
 
+
+
+    @Query("SELECT new org.sid.ebankingbackend.services.Tickets.TicketStatisticsDTO(c.compname, date(t.creationDate), count(t)) " +
+            "FROM Ticket t JOIN t.places p JOIN p.venuePlan vp JOIN vp.venue v JOIN v.competitions c " +
+            "WHERE c.idcomp = :competitionId AND t.creationDate BETWEEN (c.startdate - 7) AND c.enddate " +
+            "GROUP BY date(t.creationDate), c.compname")
+    List<TicketStatisticsDTO> findTicketCountsByCompetition(Long competitionId);
+
+
+    // Total des Tickets Vendus pour une compétition
+    @Query("SELECT count(t) FROM Ticket t " +
+            "JOIN t.places p " +
+            "JOIN p.venuePlan vp " +
+            "JOIN vp.venue v " +
+            "JOIN v.competitions c " +
+            "WHERE c.idcomp = :competitionId")
+    int countTicketsByCompetitionId(@Param("competitionId") Long competitionId);
+
+    // Revenu Total généré par les ventes de tickets pour une compétition
+    @Query("SELECT sum(t.price.price) FROM Ticket t " +
+            "JOIN t.places p " +
+            "JOIN p.venuePlan vp " +
+            "JOIN vp.venue v " +
+            "JOIN v.competitions c " +
+            "WHERE c.idcomp = :competitionId")
+    float calculateTotalRevenueByCompetitionId(@Param("competitionId") Long competitionId);
+
+    // Taux d'Occupation des Places pour une compétition
+    @Query("SELECT count(t) FROM Ticket t " +
+            "JOIN t.places p " +
+            "JOIN p.venuePlan vp " +
+            "JOIN vp.venue v " +
+            "JOIN v.competitions c " +
+            "WHERE c.idcomp = :competitionId")
+    int countOccupiedSeatsByCompetitionId(@Param("competitionId") Long competitionId);
+
+    // Total des sièges disponibles pour une compétition
+    @Query("SELECT vp.totalSeats FROM VenuePlan vp " +
+            "JOIN vp.venue v " +
+            "JOIN v.competitions c " +
+            "WHERE c.idcomp = :competitionId")
+    int totalSeatsByCompetitionId(@Param("competitionId") Long competitionId);
 }
 

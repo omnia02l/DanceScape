@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.models.User;
+import org.sid.ebankingbackend.repository.CompetitionRepository;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
 import org.sid.ebankingbackend.repository.Tickets.PriceRepository;
 import org.sid.ebankingbackend.repository.Tickets.TicketCardRepository;
@@ -59,6 +60,8 @@ public class TicketService implements ITicketService {
 
     @Autowired
     PlacesRepository placesRepository;
+    @Autowired
+    CompetitionRepository competitionRepository;
 
 
     private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
@@ -166,12 +169,6 @@ public class TicketService implements ITicketService {
     }
 
 
-  /*  @Scheduled(fixedRate = 120000) // 120 000 millisecondes = 2 minutes
-    public void updateTicketDisponibility() {
-        Date twoMinutesAgo = new Date(System.currentTimeMillis() - 120000); // Définir le moment "il y a deux minutes"
-        // Mettre à jour les tickets créés il y a plus de deux minutes
-        ticketRepository.updateDisponibilityForTicketsBefore(twoMinutesAgo);
-    }*/
     public Ticket updateTicketPriceForAgeGroup(Long ticketId, TrancheAge trancheAge) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
@@ -246,7 +243,7 @@ public class TicketService implements ITicketService {
 
     }
 
-
+//////////Sprint 2 ///////////////////
     @Transactional
     public void processTicket(String ref) throws Exception {
         Ticket ticket = ticketRepository.findByRefTicket(ref);
@@ -292,8 +289,50 @@ public class TicketService implements ITicketService {
     }
 
 
+    public List<TicketStatisticsDTO> getTicketStatistics(Long competitionId) {
+        return ticketRepository.findTicketCountsByCompetition(competitionId);
+    }
 
 
+
+    public int getTotalTicketsSold(Long competitionId) {
+        return ticketRepository.countTicketsByCompetitionId(competitionId);
+    }
+
+    public float getTotalRevenue(Long competitionId) {
+        return ticketRepository.calculateTotalRevenueByCompetitionId(competitionId);
+    }
+
+    public double getOccupancyRate(Long competitionId) {
+        int occupiedSeats = ticketRepository.countOccupiedSeatsByCompetitionId(competitionId);
+        int totalSeats = ticketRepository.totalSeatsByCompetitionId(competitionId);
+        return (double) occupiedSeats / totalSeats * 100;
+    }
+
+
+    public void analyzeAndSuggestPromotions(Long competitionId) {
+        Competition competition = competitionRepository.findById(competitionId).orElse(null);
+        if (competition == null) {
+            System.out.println("Competition not found!");
+            return;
+        }
+
+        int totalSeats = ticketRepository.totalSeatsByCompetitionId(competitionId);
+        int occupiedSeats = ticketRepository.countOccupiedSeatsByCompetitionId(competitionId);
+        double progress = (double) occupiedSeats / totalSeats * 100.0;
+
+        // Get the current date and calculate days until the competition starts
+        long daysUntilCompetition = (competition.getStartdate().getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
+
+        if (daysUntilCompetition < 10 && progress < 50) {
+            System.out.println("Low sales progress and the competition is soon. Consider a ticket promotion!");
+            // Code to trigger a promotion or notify administrator to do so
+        } else if (progress > 75) {
+            System.out.println("Sales are going well. No promotion needed.");
+        } else {
+            System.out.println("Sales progress is moderate. Keep monitoring.");
+        }
+    }
 
 }
 

@@ -82,21 +82,6 @@ public class PlacesServices implements IPlacesServices {
     }
 
 
-/*    public List<Places> confirmPlaces(List<Long> ids) {
-        List<Places> placesToConfirm = placesRepository.findAllByIdPlace(ids);
-        List<Places> confirmedPlaces = new ArrayList<>();
-
-        for (Places place : placesToConfirm) {
-            if (place.isSelected()) {
-                place.setOccupied(true);
-                confirmedPlaces.add(place);
-            }
-        }
-
-        return placesRepository.saveAll(confirmedPlaces);
-    }
-*/
-
     @Transactional
     public List<Places> confirmPlaces(Long venuePlanId,Long userid,List<Long> ids) {
         List<Places> confirmedPlaces = new ArrayList<>();
@@ -161,29 +146,27 @@ public class PlacesServices implements IPlacesServices {
         return seatNumbersByRow;
     }
 
-    public PlaceStatistics getPlaceStatistics(Long venuePlanId) {
+    public List<SeatStatusDTO> getPlaceStatistics(Long venuePlanId) {
         List<Places> allPlaces = placesRepository.findByVenuePlan_IdPlan(venuePlanId);
-
-        // Les listes pour classer les places
-        List<Places> neverBooked = new ArrayList<>();
-        List<Places> bookedOnce = new ArrayList<>();
-        List<Places> bookedMoreThanOnce = new ArrayList<>();
+        List<SeatStatusDTO> seatStatuses = new ArrayList<>();
 
         for (Places place : allPlaces) {
+            String status;
             switch (place.getBookingCount()) {
                 case 0:
-                    neverBooked.add(place);
+                    status = "never-booked";
                     break;
                 case 1:
-                    bookedOnce.add(place);
+                    status = "booked-once";
                     break;
                 default:
-                    bookedMoreThanOnce.add(place);
+                    status = "booked-more-than-once";
                     break;
             }
+            seatStatuses.add(new SeatStatusDTO(place.getIdPlace(), status));
         }
 
-        return new PlaceStatistics(neverBooked, bookedOnce, bookedMoreThanOnce);
+        return seatStatuses;
     }
 
 }
