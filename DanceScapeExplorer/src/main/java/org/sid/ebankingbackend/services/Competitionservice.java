@@ -3,6 +3,8 @@ import lombok.AllArgsConstructor;
 import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.repository.*;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
+import org.sid.ebankingbackend.repository.Tickets.TicketRepository;
+import org.sid.ebankingbackend.services.Tickets.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +31,11 @@ public class Competitionservice implements ICompetitionservice {
     VenueRepository venrepo;
     @Autowired
     PlacesRepository placesRepository;
+    @Autowired
+    TicketService ticketService;
+
+    @Autowired
+    TicketRepository ticketRepository;
 
 
     @Override
@@ -108,7 +116,7 @@ public class Competitionservice implements ICompetitionservice {
 
     //ibtihel sprint2
     //@Scheduled(cron = "0 0 0 * * ?")
-     @Scheduled(cron = "0 */3 * * * *")
+    // @Scheduled(cron = "0 */3 * * * *")
     @Transactional
     public void checkCompetitionEndDate() {
         Date today = new Date();
@@ -130,6 +138,28 @@ public class Competitionservice implements ICompetitionservice {
             }
         }
     }
+    public List<TicketKpiDTO> getAllCompetitionStats() {
+        return comprepo.findAll().stream().map(comp -> {
+            int totalTicketsSold = ticketService.getTotalTicketsSold(comp.getIdcomp());
+            float totalRevenue = ticketService.getTotalRevenue(comp.getIdcomp());
+            int occupiedSeats = ticketRepository.countOccupiedSeatsByCompetitionId(comp.getIdcomp());
+            int totalSeats = ticketRepository.totalSeatsByCompetitionId(comp.getIdcomp());
+            double occupancyRate = (double) occupiedSeats / totalSeats * 100;  // Calculate percentage
+
+            return new TicketKpiDTO(
+                    comp.getIdcomp(),
+                    comp.getVenue().getIdvenue(),
+                    comp.getCompname(),
+                    comp.getVenue().getVname(),
+                    totalTicketsSold,
+                    totalRevenue,
+                    occupancyRate,
+                    occupiedSeats,
+                    totalSeats
+            );
+        }).collect(Collectors.toList());
+    }
+
 
 }
 

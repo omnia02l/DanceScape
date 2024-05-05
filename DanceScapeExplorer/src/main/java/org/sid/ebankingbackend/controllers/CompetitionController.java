@@ -2,9 +2,11 @@ package org.sid.ebankingbackend.controllers;
 
 import org.sid.ebankingbackend.entities.Competition;
 import org.sid.ebankingbackend.entities.GenderstatDTO;
+import org.sid.ebankingbackend.entities.TicketKpiDTO;
 import org.sid.ebankingbackend.services.Competitionservice;
 import org.sid.ebankingbackend.services.ICompetitionservice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -75,5 +77,9 @@ public class CompetitionController {
         return competitionservice.getVenuePlanIdByCompetitionId(competitionId);
     }
 
-
+    @GetMapping("/statsKpiTicket")
+    public ResponseEntity<List<TicketKpiDTO>> getAllCompetitionStats() {
+        List<TicketKpiDTO> stats = competitionservice.getAllCompetitionStats();
+        return ResponseEntity.ok(stats);
+    }
 }
