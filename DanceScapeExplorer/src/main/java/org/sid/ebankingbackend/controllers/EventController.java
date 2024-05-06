@@ -46,7 +46,8 @@ public class EventController {
             simpleMailMessage.setTo(emailAddress);
             simpleMailMessage.setSubject("Invitation");
             simpleMailMessage.setFrom("clasherwin59@gmail.com");
-            simpleMailMessage.setText("You have been invited to an event, go and check for more details. ");
+            //set
+            simpleMailMessage.setText("Dear "+ userDTO.getFirsName() +", You have been invited to an event, go and check for more details. ");
             emailService.send(simpleMailMessage);
         }
 

@@ -15,6 +15,7 @@ import org.sid.ebankingbackend.repository.ConfirmationKeyRepo;
 import org.sid.ebankingbackend.repository.RoleRepository;
 import org.sid.ebankingbackend.repository.UserRepository;
 import org.sid.ebankingbackend.services.EmailService;
+//import org.sid.ebankingbackend.services.Tickets.Email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -119,7 +120,7 @@ public class SecurityController {
 
     @PostMapping("/login")
     public Map<String, String> login(@RequestParam String username, @RequestParam String password) {
-        log.info("helooooooooooooooooo");
+        log.info("Welcome");
         log.info(username);
         log.info(password);
         Authentication authentication = authenticationManager.authenticate(

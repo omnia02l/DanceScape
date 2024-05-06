@@ -18,10 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);
+
     Optional<User> findByDiscount(String discountCode);
-
-    @Query (value = "select count(*) from users where disabled=?1", nativeQuery = true)
+    @Query(value = "select count(*) from users where disabled=?1", nativeQuery = true)
     Long getStatusNumber(int status);
-    public User findByEmailAndUsername(String email, String username);
-
 }
