@@ -1,5 +1,6 @@
 package org.sid.ebankingbackend.services;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.XSlf4j;
 import org.sid.ebankingbackend.entities.*;
 import org.sid.ebankingbackend.repository.*;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
@@ -9,8 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+
 public class Competitionservice implements ICompetitionservice {
     @Autowired
     CompetitionRepository comprepo;
@@ -118,7 +126,72 @@ public class Competitionservice implements ICompetitionservice {
                         Collectors.counting()
                 ));
     }
+////////////////////
+@Override
+public String getCountdown(Competition competition) {
+    LocalDateTime currentDateTime = LocalDateTime.now();
+    LocalDateTime startDateTime = convertToLocalDateTimeViaSqlDate(competition.getStartdate());
+    LocalDateTime endDateTime = convertToLocalDateTimeViaSqlDate(competition.getEnddate());
 
+    if (currentDateTime.isBefore(startDateTime)) {
+        // If the current date is before the start date, calculate the difference
+        Duration durationUntilStart = Duration.between(currentDateTime, startDateTime);
+        long days = durationUntilStart.toDays();
+        long hours = durationUntilStart.toHours() % 24;
+        long minutes = durationUntilStart.toMinutes() % 60;
+        long seconds = durationUntilStart.getSeconds() % 60;
+        return String.format("%d days : %d hours: %d minutes: %d seconds \n until the competition starts", days, hours, minutes, seconds);
+    } else if (currentDateTime.isEqual(startDateTime)) {
+        // If the current date is equal to the start date, display "Day D"
+        return "It's D-Day: The competition starts today!";
+    } else if (currentDateTime.isBefore(endDateTime)) {
+        // If the current date is after the start date but before the end date, calculate the difference
+        Duration durationUntilEnd = Duration.between(currentDateTime, endDateTime);
+        long days = durationUntilEnd.toDays();
+        long hours = durationUntilEnd.toHours() % 24;
+        long minutes = durationUntilEnd.toMinutes() % 60;
+        long seconds = durationUntilEnd.getSeconds() % 60;
+        return String.format(" %d days : %d hours : %d minutes : %d seconds left \n until the end of the competition", days, hours, minutes, seconds);
+    } else {
+        // If the current date is after the end date, display an appropriate message
+        return "The competition has ended. Thank you for participating!";
+    }
+}
+    private LocalDateTime convertToLocalDateTimeViaSqlDate(Date dateToConvert) {
+        return new java.sql.Timestamp(dateToConvert.getTime()).toLocalDateTime();
+    }
+//////////////////////
+@Scheduled(fixedRate = 1000) // Exécuter toutes les secondes
+public void updateCompetitionStatus() {
+    List<Competition> competitions = comprepo.findAll();
+    LocalDateTime currentDateTime = LocalDateTime.now();
+
+    for (Competition competition : competitions) {
+        updateStatus(competition, currentDateTime);
+        comprepo.save(competition);
+    }
+    System.out.println("Competition status updated.");
+}
+
+    private void updateStatus(Competition competition, LocalDateTime currentDateTime) {
+        LocalDateTime startDateTime = convertToLocalDateTimeViaSqlDate(competition.getStartdate());
+        LocalDateTime endDateTime = convertToLocalDateTimeViaSqlDate(competition.getEnddate());
+
+        if (currentDateTime.isBefore(startDateTime)) {
+            competition.setCompstatus(Compstatus.Upccoming);
+        } else if (currentDateTime.isEqual(startDateTime) || (currentDateTime.isAfter(startDateTime) && currentDateTime.isBefore(endDateTime))) {
+            competition.setCompstatus(Compstatus.Ongoing);
+        } else {
+            competition.setCompstatus(Compstatus.Concluded);
+        }
+    }
+
+
+
+
+
+
+    //////////////////
 
     public Long getVenuePlanIdByCompetitionId(Long competitionId) {
         return comprepo.findVenuePlanIdByCompetitionId(competitionId)

@@ -46,7 +46,7 @@
         private Date regisdeadline;
 
         @Enumerated(EnumType.STRING)
-        private Compstatus compstatus =Compstatus.Ongoing;
+        private Compstatus compstatus ;
 
         private float feesperparticipant;
 

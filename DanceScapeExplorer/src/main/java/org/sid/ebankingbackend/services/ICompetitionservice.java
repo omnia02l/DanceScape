@@ -6,6 +6,7 @@ package org.sid.ebankingbackend.services;
 import org.sid.ebankingbackend.entities.Competition;
 import org.sid.ebankingbackend.entities.GenderstatDTO;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,5 +25,7 @@ public interface ICompetitionservice {
     GenderstatDTO getGenderStatsForCompetition(Long competitionId);
     Map<String, Long> getCompetitionCountByDanceStyle();
     Map<String, Long> getNumberOfParticipantsPerCompetition();
+    String getCountdown(Competition competition);
+
 
 }
