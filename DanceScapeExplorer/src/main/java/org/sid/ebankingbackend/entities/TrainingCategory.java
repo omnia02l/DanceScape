@@ -1,5 +1,5 @@
 package org.sid.ebankingbackend.entities;
 
 public enum TrainingCategory {
-    A, B, C , D
+    SALSA,URBAIN_DANCE,HIP_HOP,DANCE_CLASSIC
 }
