@@ -81,16 +81,6 @@ public class Competitionservice implements ICompetitionservice {
         return comprepo.save(c);
     }
 
-
-
-
-
-
-
-
-
-
-
     @Override
     public GenderstatDTO getGenderStatsForCompetition(Long competitionId) {
         // Récupérer le nombre total d'hommes pour la compétition
