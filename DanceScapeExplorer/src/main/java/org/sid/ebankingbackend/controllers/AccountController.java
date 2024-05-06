@@ -39,7 +39,7 @@ public class AccountController {
 
     @PostMapping("/edit-profile")
     private String editProfile(Principal principal, @RequestBody EditProfileRequest editProfileRequest) {
-       return this.accountService.editProfile(principal.getName(), editProfileRequest);
+        return this.accountService.editProfile(principal.getName(), editProfileRequest);
     }
 
     @PostMapping("/update-password")
