@@ -28,8 +28,10 @@ public class Places {
     private  boolean isSelected;
     private Long userid;
 
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "plan_id") // Ajout de JoinColumn pour plus de clarté dans la relation
     private VenuePlan venuePlan;
+
 }

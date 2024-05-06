@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.sid.ebankingbackend.entities.PlaceStatistics;
 import org.sid.ebankingbackend.entities.Places;
 import org.sid.ebankingbackend.entities.RowLabel;
+import org.sid.ebankingbackend.entities.SeatStatusDTO;
 import org.sid.ebankingbackend.repository.Tickets.PlacesRepository;
 import org.sid.ebankingbackend.services.Tickets.PlacesServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +79,8 @@ public class PlacesController {
     }
 
 
-    @GetMapping("/statistics/{venuePlanId}")
-    public ResponseEntity<PlaceStatistics> getPlaceStatistics(@PathVariable Long venuePlanId) {
-        PlaceStatistics statistics = placesService.getPlaceStatistics(venuePlanId);
-        return new ResponseEntity<>(statistics, HttpStatus.OK);
+    @GetMapping("/places/statistics/{venuePlanId}")
+    public List<SeatStatusDTO> getSeatStatistics(@PathVariable Long venuePlanId) {
+        return placesService.getPlaceStatistics(venuePlanId);
     }
 }
