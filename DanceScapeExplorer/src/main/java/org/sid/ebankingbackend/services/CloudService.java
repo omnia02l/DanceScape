@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class CloudinaryService {
+public class CloudService {
 
     private final Cloudinary cloudinary;
 
-    public CloudinaryService(Cloudinary cloudinary) {
+    public CloudService(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
     }
 

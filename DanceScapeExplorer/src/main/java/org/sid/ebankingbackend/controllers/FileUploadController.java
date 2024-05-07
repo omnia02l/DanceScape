@@ -1,6 +1,6 @@
 package org.sid.ebankingbackend.controllers;
 
-import org.sid.ebankingbackend.services.CloudinaryService;
+import org.sid.ebankingbackend.services.CloudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import java.util.Map;
 @CrossOrigin("*")
 public class FileUploadController {
 
-    private final CloudinaryService cloudinaryService;
+    private final CloudService cloudinaryService;
 
     @Autowired
-    public FileUploadController(CloudinaryService cloudinaryService) {
+    public FileUploadController(CloudService cloudinaryService) {
         this.cloudinaryService = cloudinaryService;
     }
 

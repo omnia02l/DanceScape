@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-
-
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,5 +88,17 @@ public class CompetitionController {
     public ResponseEntity<List<TicketKpiDTO>> getAllCompetitionStats() {
         List<TicketKpiDTO> stats = competitionservice.getAllCompetitionStats();
         return ResponseEntity.ok(stats);
+    }
+
+
+    @GetMapping("/countdown/{competitionId}")
+    public Map<String, String> getDayCountdown(@PathVariable Long competitionId) {
+        Competition competition = compserv.retrieveCompetition(competitionId);
+        String countdown = compserv.getCountdown(competition);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("countdown", countdown);
+
+        return response;
     }
 }

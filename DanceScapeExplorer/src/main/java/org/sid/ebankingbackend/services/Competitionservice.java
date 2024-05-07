@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -118,6 +120,79 @@ public class Competitionservice implements ICompetitionservice {
                         Collectors.counting()
                 ));
     }
+    ////////////////////
+    @Override
+    public String getCountdown(Competition competition) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime startDateTime = convertToLocalDateTimeViaSqlDate(competition.getStartdate());
+        LocalDateTime endDateTime = convertToLocalDateTimeViaSqlDate(competition.getEnddate());
+
+        if (currentDateTime.isBefore(startDateTime)) {
+            // If the current date is before the start date, calculate the difference
+            Duration durationUntilStart = Duration.between(currentDateTime, startDateTime);
+            long days = durationUntilStart.toDays();
+            long hours = durationUntilStart.toHours() % 24;
+            long minutes = durationUntilStart.toMinutes() % 60;
+            long seconds = durationUntilStart.getSeconds() % 60;
+            return String.format("%d days : %d hours: %d minutes: %d seconds \n until the competition starts", days, hours, minutes, seconds);
+        } else if (currentDateTime.isEqual(startDateTime)) {
+            // If the current date is equal to the start date, display "Day D"
+            return "It's D-Day: The competition starts today!";
+        } else if (currentDateTime.isBefore(endDateTime)) {
+            // If the current date is after the start date but before the end date, calculate the difference
+            Duration durationUntilEnd = Duration.between(currentDateTime, endDateTime);
+            long days = durationUntilEnd.toDays();
+            long hours = durationUntilEnd.toHours() % 24;
+            long minutes = durationUntilEnd.toMinutes() % 60;
+            long seconds = durationUntilEnd.getSeconds() % 60;
+            return String.format(" %d days : %d hours : %d minutes : %d seconds left \n until the end of the competition", days, hours, minutes, seconds);
+        } else {
+            // If the current date is after the end date, display an appropriate message
+            return "The competition has ended. Thank you for participating!";
+        }
+    }
+    private LocalDateTime convertToLocalDateTimeViaSqlDate(Date dateToConvert) {
+        return new java.sql.Timestamp(dateToConvert.getTime()).toLocalDateTime();
+    }
+    //////////////////////
+    @Scheduled(fixedRate = 1000) // Exécuter toutes les secondes
+    public void updateCompetitionStatus() {
+        List<Competition> competitions = comprepo.findAll();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        for (Competition competition : competitions) {
+            updateStatus(competition, currentDateTime);
+            comprepo.save(competition);
+        }
+        System.out.println("Competition status updated.");
+    }
+
+    private void updateStatus(Competition competition, LocalDateTime currentDateTime) {
+        LocalDateTime startDateTime = convertToLocalDateTimeViaSqlDate(competition.getStartdate());
+        LocalDateTime endDateTime = convertToLocalDateTimeViaSqlDate(competition.getEnddate());
+
+        if (currentDateTime.isBefore(startDateTime)) {
+            competition.setCompstatus(Compstatus.Upccoming);
+        } else if (currentDateTime.isEqual(startDateTime) || (currentDateTime.isAfter(startDateTime) && currentDateTime.isBefore(endDateTime))) {
+            competition.setCompstatus(Compstatus.Ongoing);
+        } else {
+            competition.setCompstatus(Compstatus.Concluded);
+        }
+    }
+
+
+
+
+
+
+    //////////////////
+
+
+
+
+
+
+
 
 
     public Long getVenuePlanIdByCompetitionId(Long competitionId) {
@@ -174,6 +249,10 @@ public class Competitionservice implements ICompetitionservice {
             );
         }).collect(Collectors.toList());
     }
+
+
+
+
 
 
 }

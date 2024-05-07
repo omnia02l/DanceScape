@@ -36,8 +36,7 @@ public class QRCodeGenerator {
                 "\"expireDate\":\"" + ticket.getExpireDate() + "\"," +
                 "\"typeTicket\":\"" + ticket.getTypeTicket() + "\"," +
                 "\"scanned\":\"" + ticket.isScanned() + "\"" +
-                "\"scanned\":\"" + ticket.getPlaces().getSeatNumber() + "\"" +
-                "\"scanned\":\"" + ticket.getPlaces().getRowLabel() + "\"" +
+
 
                 "}";
 

@@ -24,5 +24,5 @@ public interface ICompetitionservice {
     GenderstatDTO getGenderStatsForCompetition(Long competitionId);
     Map<String, Long> getCompetitionCountByDanceStyle();
     Map<String, Long> getNumberOfParticipantsPerCompetition();
-
+    String getCountdown(Competition competition);
 }

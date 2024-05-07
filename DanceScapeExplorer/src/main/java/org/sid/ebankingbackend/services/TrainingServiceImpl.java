@@ -206,9 +206,9 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public TrainingStatsWithCat getTrainingStatsWithCat() {
-        return new TrainingStatsWithCat(this.trainingRepo.getStatsWithCateg("A"),
-                this.trainingRepo.getStatsWithCateg("B"),
-                this.trainingRepo.getStatsWithCateg("C"),
-                this.trainingRepo.getStatsWithCateg("D"));
+        return new TrainingStatsWithCat(this.trainingRepo.getStatsWithCateg("SALSA"),
+                this.trainingRepo.getStatsWithCateg("URBAIN_DANCE"),
+                this.trainingRepo.getStatsWithCateg("HIP_HOP"),
+                this.trainingRepo.getStatsWithCateg("DANCE_CLASSIC"));
     }
 }
